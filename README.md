@@ -1,0 +1,2 @@
+# HIPs
+Handshake Improvement Proposals
