@@ -1,7 +1,7 @@
 # HIP-0002 : Well Known directory for wallets address
 
 ```
-Number:  HIP-0002
+Number:  HIP-xxxx
 Title:   Well Known directory for wallets address
 Type:    Informational
 Status:  Draft
