@@ -1,4 +1,4 @@
-# HIP-0002 : Well Known directory for wallets address
+# HIP-xxxx : Well Known directory for wallets address
 
 ```
 Number:  HIP-xxxx
