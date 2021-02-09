@@ -5,6 +5,7 @@ Handshake Improvement Proposals
 | Number                  | Title                                                               | Type          | Status   |
 |-------------------------|---------------------------------------------------------------------|---------------|----------|
 | [HIP-0000](HIP-0000.md) | HIP Template                                                        | Informational | Draft    |
+| [HIP-xxxx](HIP-xxxx.md) | Name data standard for alternative namespace resolution                                                        | Informational | Draft    |
 
 # What is a HIP?
 
