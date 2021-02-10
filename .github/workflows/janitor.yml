@@ -1,0 +1,48 @@
+name: The Janitor
+on:
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  assign:
+    name: Assign new HIP number
+
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'janitor:assign') }}
+
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+      - id: janitor
+        run: |
+          touch .janitor
+          latest=$(cat .janitor)
+          next=$((latest+1))
+          echo $next > .janitor
+          echo "::set-output name=next::$(printf %4s $next | tr ' ' 0)"
+      - uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "**Assigning new HIP number**\nPlease, update this PR and use `HIP-${{ steps.janitor.outputs.next }}`"
+            })
+
+            github.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: "janitor:assign"
+            })
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          author_name: Janitor
+          message: Increment HIP number
+          github_token: ${{ secrets.GITHUB_TOKEN }}
