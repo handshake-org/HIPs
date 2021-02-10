@@ -25,7 +25,7 @@ jobs:
           echo "::set-output name=next::$(printf %4s $next | tr ' ' 0)"
       - uses: actions/github-script@v3
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{secrets.JANITOR_TOKEN}}
           script: |
             github.issues.createComment({
               issue_number: context.issue.number,
@@ -45,4 +45,4 @@ jobs:
         with:
           author_name: Janitor
           message: Increment HIP number
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.JANITOR_TOKEN }}
