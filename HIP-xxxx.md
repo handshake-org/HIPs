@@ -46,6 +46,9 @@ weak points of centralization.
   - Bob adds funds to the TX inputs and adds a change output if necessary
   - Bob signs his inputs with `SIGHASH_ALL`
   - Bob broadcasts the final transaction
+    - This action transfers the money to Alice and the name to Bob in the same TX
+    - Once this TX is confirmed, no rollback of the swap is possible
+
 
 ## Implementation
 
