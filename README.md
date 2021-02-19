@@ -2,9 +2,10 @@
 
 Handshake Improvement Proposals
 
-| Number                  | Title                                                               | Type          | Status   |
-|-------------------------|---------------------------------------------------------------------|---------------|----------|
-| [HIP-0000](HIP-0000.md) | HIP Template                                                        | Informational | Draft    |
+| Number                  | Title                                    | Type          | Status |
+| ----------------------- | ---------------------------------------- | ------------- | ------ |
+| [HIP-0000](HIP-0000.md) | HIP Template                             | Informational | Draft  |
+| [HIP-0002](HIP-0002.md) | Well Known directory for wallets address | Informational | Draft  |
 
 # What is a HIP?
 
