@@ -1,13 +1,15 @@
 # HIPs
 
+[![[Telegram] Handshake Dev Chat](https://img.shields.io/badge/Telegram-Handshake%20Dev%20Chat-blue.svg?logo=telegram)](https://t.me/hns_tech)
+
 Handshake Improvement Proposals
 
-| Number                  | Title                                    | Type          | Status |
-| ----------------------- | ---------------------------------------- | ------------- | ------ |
-| [HIP-0000](HIP-0000.md) | HIP Template                             | Informational | Draft  |
-| [HIP-0002](HIP-0002.md) | Well Known directory for wallets address | Informational | Draft  |
-| [HIP-0004](HIP-0004.md) | Interactive Atomic Name Swaps            | Standards Track | Draft    |
-| [HIP-0005](HIP-0005.md) | Name Data for Alternative Namespace Resolution            | Standards Track | Draft    |
+| Number                  | Title                                          | Type            | Status |
+| ----------------------- | ---------------------------------------------- | --------------- | ------ |
+| [HIP-0000](HIP-0000.md) | HIP Template                                   | Informational   | Draft  |
+| [HIP-0002](HIP-0002.md) | Well Known directory for wallets address       | Informational   | Draft  |
+| [HIP-0004](HIP-0004.md) | Interactive Atomic Name Swaps                  | Standards Track | Draft  |
+| [HIP-0005](HIP-0005.md) | Name Data for Alternative Namespace Resolution | Standards Track | Draft  |
 
 # What is a HIP?
 
