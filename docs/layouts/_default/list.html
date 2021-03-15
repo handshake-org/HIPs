@@ -1,0 +1,29 @@
+{{ define "content" }}
+{{ $pages := .Pages }}
+<h1>{{ .Page.Title }}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Status</th>
+        </tr>
+        {{- range (.Paginate $pages).Pages.ByParam "hip" }}
+        <tr>
+            <td>
+                <a href="{{ .Permalink }}" title="HIP-{{ .Title }}">
+                    HIP-{{ .Params.hip }}
+                </a>
+            </td>
+            <td>{{ .Title }}</td>
+            <td>{{ .Params.Category }}</td>
+            <td>{{ .Params.status}}</td>
+        </tr>
+        {{- end }}
+    </thead>
+</table>
+
+{{- template "_internal/pagination.html" . }}
+{{end }}
