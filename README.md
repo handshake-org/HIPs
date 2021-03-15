@@ -23,3 +23,7 @@ Please do not assign yourself a HIP number, just use the placeholder `HIP-xxxx` 
 If the proposal is well-formatted it may be assigned a HIP number by a project maintainer. The
 author will then be expected to revise the pull request with this number, along with any other
 comments about the proposal itself, before being merged.
+
+## Existing proposals
+
+The updated list of proposals are availabe [here](http://hsd-dev.org/HIPs/proposals).
