@@ -26,4 +26,4 @@ comments about the proposal itself, before being merged.
 
 ## Existing proposals
 
-The updated list of proposals are available [here](http://hsd-dev.org/HIPs/proposals).
+The updated list of proposals are available [here](http://hsd-dev.org/HIPs/proposals/).

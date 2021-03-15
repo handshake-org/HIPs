@@ -17,6 +17,10 @@
     <meta name="title" content="{{ $title }}">
     <meta name="description" content="{{ $desc }}">
 
+    {{ range .Params.authors }}
+    <meta name="author" content="{{ . }}">
+    {{ end }}
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{.Permalink}}">
