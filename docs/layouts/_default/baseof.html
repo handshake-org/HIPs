@@ -6,9 +6,20 @@
     {{ partial "header" . }}
     <main>
         {{ partial "sidebar" . }}
+        {{ if .IsPage }}
+        <article class="page">
+            <section class="markdown-body">
+                {{ block "content" . }}{{ end }}
+            </section>
+            <aside>
+                {{ partial "right-sidebar" . }}
+            </aside>
+        </article>
+        {{ else }}
         <section class="markdown-body">
             {{ block "content" . }}{{ end }}
         </section>
+        {{ end }}
     </main>
     {{ partial "footer.html" . }}
 </body>
