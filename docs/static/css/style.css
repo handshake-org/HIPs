@@ -1,0 +1,19 @@
+.capitalize {
+    text-transform: capitalize;
+}
+
+.upper {
+    text-transform: uppercase;
+}
+
+.markdown-body .info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 20px;
+}
+
+.markdown-body .info ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}

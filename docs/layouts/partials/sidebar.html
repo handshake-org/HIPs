@@ -1,0 +1,26 @@
+<nav>
+    <div class="wrapper">
+        <ul>
+            <li><strong>HIPs</strong></li>
+            <li><a href='{{ "/" | relURL }}'>Home</a></li>
+            <li><a href='{{ relURL (print " /proposals/" | urlize) }}'>Proposals</a></li>
+            <li><a href="https://t.me/hns_tech">Tech Chat</a></li>
+        </ul>
+
+        {{ range $taxonomy_term, $taxonomy := .Site.Taxonomies }}
+        {{ with $.Site.GetPage (printf "/%s" $taxonomy_term) }}
+        <ul>
+            <li><strong class="upper">{{ $taxonomy_term }}</strong></li>
+
+            {{ range $key, $value := $taxonomy }}
+            <li class="capitalize">
+                <a href="{{ $.Site.BaseURL }}{{ $taxonomy_term }}/{{ $key }}">{{ humanize $key }}</a>
+            </li>
+            {{ end }}
+
+        </ul>
+        {{ end }}
+        {{ end }}
+
+    </div>
+</nav>

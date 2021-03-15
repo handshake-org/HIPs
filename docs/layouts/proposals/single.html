@@ -1,0 +1,55 @@
+{{ define "content" }}
+<h2>HIP-{{ .Params.hip }}: {{ .Title }}</h2>
+
+{{ .Content }}
+
+<hr />
+
+<div class="info">
+    <strong>HIP:</strong>
+    <div>{{ .Params.hip }} (<a href="https://github.com/handshake-org/HIPs/blob/master/HIP-{{ .Params.hip }}.md">view on
+            GitHub</a>)</div>
+
+    <strong>Status:</strong>
+    <div>
+        <a href='{{ relURL (print " /status/" .Params.status | urlize) }}'>
+            {{ .Params.status }}
+        </a>
+    </div>
+
+    <strong>Type:</strong>
+    <div>
+        <a href='{{ relURL (print " /category/" .Params.category | urlize) }}'>
+            {{ .Params.category }}
+        </a>
+    </div>
+
+    <strong>Created:</strong>
+    <div>{{ .PublishDate.Format "Mon, 02 Jan 2006" }}</div>
+
+    <strong>Last commit:</strong>
+    <div>{{ .Lastmod.Format "Mon, 02 Jan 2006" }}</div>
+
+
+    {{ if eq (len .Params.authors) 1 }}
+    <strong>Author:</strong>
+    {{ with .Params.authors }}
+    {{ range $author := . }}
+    <div>{{$author}}</div>
+    {{ end }}
+    {{ end }}
+</div>
+{{else}}
+<strong>Authors:</strong>
+<ul>
+    {{ with .Params.authors }}
+    {{ range $author := . }}
+
+    <li>{{$author}}</li>
+    {{ end }}
+    {{ end }}
+</ul>
+{{ end }}
+
+</div>
+{{end }}

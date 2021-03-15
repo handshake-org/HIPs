@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+{{- partial "head.html" . -}}
+
+<body>
+    {{ partial "header" . }}
+    <main>
+        {{ partial "sidebar" . }}
+        <section class="markdown-body">
+            {{ block "content" . }}{{ end }}
+        </section>
+    </main>
+    {{ partial "footer.html" . }}
+</body>
+
+</html>

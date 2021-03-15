@@ -1,0 +1,17 @@
+
+languageCode = "en"
+title = "Handshake Improvement Proposals"
+baseUrl = "https://hsd-dev.org/HIPs/"
+
+
+[params]
+
+[frontmatter]
+  lastmod = ["lastmod", ":fileModTime", ":default"]
+
+[taxonomies]
+  status = "status"
+  category = "category"
+
+[markup]
+  defaultMarkdownHandler = "goldmark"

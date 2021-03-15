@@ -1,0 +1,4 @@
+node_modules
+docs/content/proposals/*
+!docs/content/proposals/_index.md
+docs/public
