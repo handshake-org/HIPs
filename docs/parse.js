@@ -11,6 +11,8 @@ const HIP_REGEX = /HIP-(?<number>[\d]{4})/i;
 
 const formatNumber = n => String(n).padStart(4, '0');
 
+fs.copySync(path.join(ORIGIN, 'README.md'), path.join(CONTENT, '_index.md'));
+
 fs.readdirSync(ORIGIN).forEach(file => {
     if (!HIP_REGEX.test(file)) {
         return;
@@ -25,8 +27,6 @@ fs.readdirSync(ORIGIN).forEach(file => {
     } else {
         const [title, metadata, ...content] = fs.readFileSync(fullPath, 'UTF-8').split('```');
         const props = properties.parse(metadata.replace('\n    ', ';'));
-
-        console.log({ props });
 
         const authors =
             props.Authors &&
