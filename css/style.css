@@ -17,3 +17,45 @@
     margin: 0;
     padding: 0;
 }
+
+.page {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 100%;
+    background-color: #f7f9fb;
+}
+
+.page > :first-child {
+    flex-basis: 0;
+    flex-grow: 999;
+    min-width: 40%;
+    background-color: white;
+    border-right: 1px solid #c2c2c2;
+}
+
+aside {
+    flex-grow: 1;
+    flex-basis: 300px;
+    align-self: start;
+    position: sticky;
+    top: 0;
+    padding: 10px 50px;
+}
+
+#TableOfContents {
+    border-right: none;
+    width: initial;
+    max-width: initial;
+    align-items: flex-start;
+    padding-top: 10px;
+}
+#TableOfContents ul {
+    margin-left: 20px;
+    margin-bottom: 0;
+}
+
+#TableOfContents ul li {
+    margin: -6px 0;
+    font-size: 0.9em;
+}
