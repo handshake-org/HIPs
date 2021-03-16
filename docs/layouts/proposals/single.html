@@ -7,8 +7,7 @@
 
 <div class="info">
     <strong>HIP:</strong>
-    <div>{{ .Params.hip }} (<a href="https://github.com/handshake-org/HIPs/blob/master/HIP-{{ .Params.hip }}.md">view on
-            GitHub</a>)</div>
+    <div>{{ .Params.hip }}</div>
 
     <strong>Status:</strong>
     <div>
@@ -38,18 +37,21 @@
     <div>{{$author}}</div>
     {{ end }}
     {{ end }}
-</div>
-{{else}}
-<strong>Authors:</strong>
-<ul>
-    {{ with .Params.authors }}
-    {{ range $author := . }}
+    {{else}}
+    <strong>Authors:</strong>
+    <ul>
+        {{ with .Params.authors }}
+        {{ range $author := . }}
 
-    <li>{{$author}}</li>
+        <li>{{$author}}</li>
+        {{ end }}
+        {{ end }}
+    </ul>
     {{ end }}
-    {{ end }}
-</ul>
-{{ end }}
+</div>
+
+<hr />
+<a href="https://github.com/handshake-org/HIPs/blob/master/HIP-{{ .Params.hip }}.md">Edit on GitHub</a>
 
 </div>
 {{end }}

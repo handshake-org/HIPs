@@ -1,10 +1,9 @@
-
 languageCode = "en"
 title = "Handshake Improvement Proposals"
 baseUrl = "https://hsd-dev.org/HIPs/"
 
-
 [params]
+description = "A Handshake Improvement Proposal is a technical document that attempts to standardize a feature or protocol extension across the Handshake ecosystem."
 
 [frontmatter]
   lastmod = ["lastmod", ":fileModTime", ":default"]

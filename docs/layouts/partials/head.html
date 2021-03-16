@@ -4,6 +4,36 @@
     <link rel="stylesheet" href='https://hsd-dev.org/css/main.css' />
     <link rel="stylesheet" href='https://hsd-dev.org/css/github-markdown.min.css' />
     <link rel="stylesheet" href='{{ "css/style.css" | relURL }}' />
-    <title>{{ if .IsHome }}{{ else }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
+    <title>{{ if not .IsHome }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
     <link rel="icon" type="image/x-icon" href="https://handshake.org/img/favicon/hns-favicon.ico">
+
+    {{ $title := .Title }}
+    {{ $img := "https://hsd-dev.org/img/logo.svg"}}
+    {{ $desc := cond (.IsPage) ( print "HIP-" .Params.hip "\\nCategory: " .Params.category "\\nStatus: " .Params.status)
+    (.Site.Params.Description)
+    }}
+    <!-- Primary Meta Tags -->
+    <title>Handshake Improvement Proposals</title>
+    <meta name="title" content="{{ $title }}">
+    <meta name="description" content="{{ $desc }}">
+
+    {{ range .Params.authors }}
+    <meta name="author" content="{{ . }}">
+    {{ end }}
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{.Permalink}}">
+    <meta property="og:title" content="{{ $title }}">
+    <meta property="og:description" content="{{ $desc }}">
+    <meta property="og:image" content="{{ $img }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{.Permalink}}">
+    <meta property="twitter:title" content="{{ $title }}">
+    <meta property="twitter:description" content="{{ $desc }}">
+    <meta property="twitter:image" content="{{ $img }}">
+
+
 </head>
