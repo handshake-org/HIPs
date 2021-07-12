@@ -1,0 +1,134 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width"><link rel=stylesheet href=https://hsd-dev.org/css/main.css><link rel=stylesheet href=https://hsd-dev.org/css/github-markdown.min.css><link rel=stylesheet href=/HIPs/css/style.css><title>Trustless Live Auctions for Handshake - Handshake Improvement Proposals</title><link rel=icon type=image/x-icon href=https://handshake.org/img/favicon/hns-favicon.ico><title>Handshake Improvement Proposals</title><meta name=title content="Trustless Live Auctions for Handshake"><meta name=description content="HIP-0006\nCategory: Informational\nStatus: Final"><meta name=author content="Matthew Zipkin (@pinheadmz)"><meta property="og:type" content="website"><meta property="og:url" content="https://hsd-dev.org/HIPs/proposals/0006/"><meta property="og:title" content="Trustless Live Auctions for Handshake"><meta property="og:description" content="HIP-0006\nCategory: Informational\nStatus: Final"><meta property="og:image" content="https://hsd-dev.org/img/logo.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://hsd-dev.org/HIPs/proposals/0006/"><meta property="twitter:title" content="Trustless Live Auctions for Handshake"><meta property="twitter:description" content="HIP-0006\nCategory: Informational\nStatus: Final"><meta property="twitter:image" content="https://hsd-dev.org/img/logo.svg"></head><body><header><a href=/><img alt="Handshake logo" src=https://hsd-dev.org/img/logo.svg></a></header><main><nav><div class=wrapper><ul><li><strong>HIPs</strong></li><li><a href=/HIPs/>Home</a></li><li><a href=/HIPs/proposals/>Proposals</a></li><li><a href=https://t.me/hns_tech>Tech Chat</a></li></ul><ul><li><strong class=upper>category</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/informational>Informational</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards>Standards</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards-track>Standards track</a></li></ul><ul><li><strong class=upper>status</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/draft>Draft</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/final>Final</a></li></ul></div></nav><article class=page><section class=markdown-body><h2>HIP-0006: Trustless Live Auctions for Handshake</h2><h2 id=abstract>Abstract</h2><p>We propose an ascending-price auction system for HNS domain names without trust or
+third-party custody. A name owner initiates an auction by locking their TLD with
+a verifiable script. Bidders place bids by partially-signing <code>TRANSFER</code> transactions,
+and the name owner eventually picks the highest bid and atomically swaps the name
+ownership for the payment. The protocol requires more interactivity and centralization
+than the current Shakedex-style HIP-0001 auction format, but with some compelling trade-offs.
+In addition, the limits on collaborative transaction construction (like atomic swaps)
+mean that the buyer can not add a change output to the final transaction. Because there is
+no change output, the name owner must pay the miner fee out of their sale price in the
+final transaction.</p><h2 id=definitions>Definitions</h2><p>This proposal is based on <a href=https://hsd-dev.org/HIPs/proposals/0001/>HIP-0001</a>, and
+in particular the Swap Script, Transaction Structure, and Swap Proof. Handshake
+primitives like <code>OP_TYPE</code> and <code>SIGHASH_SINGLEREVERSE</code> are also required.</p><p>Recall the HIP-0001 Swap Script only allows two covenant actions be applied to the name:</p><ul><li><p>The name owner can sign a TRANSFER with their private key</p></li><li><p>Anyone can FINALIZE without a signature</p></li></ul><h2 id=protocol-summary>Protocol Summary</h2><h3 id=auction-open>Auction OPEN</h3><p>The auction technically begins when a name owner FINALIZEs a transfer of their name
+to a HIP-0001 locking script. The name owner must then publicly reveal the redeem script
+for the address that owns the name, so it can be verified. The locking script prevents
+the name owner from canceling an in-progress name ownership transfer. Since there is a
+small amount of interactivity required in the protocol, the name owner must also publish
+&ldquo;where&rdquo; the auction will take place. The auction &ldquo;location&rdquo; is just some internet endpoint
+where bidders can submit bids. It can be a private email address (in which case the name owner
+may choose to keep all bids confidential or truly blind), or it can be a public server
+that announces every new bid as they arrive.</p><h3 id=auction-bid>Auction BID</h3><p>A user that wants to bid on the name constructs a partially-signed transaction in
+the following format:</p><pre><code>vin:
+  0: current name owner, encumbered by Swap Script
+  1: A UTXO controlled by the bidder of some value V
+vout:
+  0: TRANSFER to the bidder's address
+</code></pre><p>Input 1 is signed with <code>SIGHASH_ANYONECANPAY | SIGHASH_SINGLEREVERSE</code>. This commits
+the incoming payment to the name transfer. Note that Input 0 is not signed yet,
+but it must be the current name-owning UTXO or the linked output 0 would be invalid.</p><p>Note that this transaction has no change output. Because the bidder is signing
+with single-reverse, they can&rsquo;t specify a change output in addition to the name
+transfer output. If they were to sign with <code>SIGHASH_ALL</code> then the next step of
+the protocol would not be possible. If they signed with <code>SIGHASH_SINGLE</code> they could
+commit to a change address, but not the name transfer.</p><p>Having no change output means the INPUT coin they are spending MUST BE THE VALUE
+OF THE BID THEY INTEND TO PLACE ON THE NAME. This is a big inconvenience
+that can be solved in at least these two ways:</p><ul><li><p>The user prepares their wallet in advance and collects UTXOs with a range
+of values (1 HNS, 10 HNS, 100 HNS, 1000 HNS, etc).</p></li><li><p>When the user wants to bid, their wallet creates a &ldquo;perfect&rdquo; UTXO by spending
+to itself, creating a coin with the exact value desired. This output can be used
+(even before it is confirmed) in this protocol.</p></li></ul><h3 id=auction-finalize>Auction FINALIZE</h3><p>The name owner collects partially-signed bids and after some time, declares the highest
+value bid the winner. The name owner completes the auction by adding a payment output
+to the partially-signed transaction, signing and broadcasting:</p><pre><code>vin:
+  0: current name owner, encumbered by Swap Script
+  1: A UTXO controlled by the bidder of some value V
+vout:
+  0: TRANSFER to the bidder's address
+  1: payment to the name-owner
+</code></pre><p>The name owner pays themselves from the fully funded transaction, and signs input 0
+with <code>SIGHASH_ALL</code>. This transaction is a valid atomic swap and can be broadcast to the network.
+Because the locking script prevents all other name actions, the auction winner can
+<code>FINALIZE</code> this name transfer any time after the 288-block lockout without any other
+obligation.</p><p>Note that since the bidder creates the INPUT and the name owner creates the OUTPUT,
+the name owner MUST also pay the miner fee for this transaction. They do so by reducing
+the value of output 1, effectively paying the miner fee out of the money they earned
+by the sale.</p><h2 id=extra-notes>Extra Notes</h2><h3 id=bids-must-remain-valid-off-chain>Bids must remain valid off-chain</h3><p>The partially-signed bid transactions are collected by the name owner and commit
+to spending a UTXO of some value V from the blockchain. In the simplest construction,
+nothing prevents the bidder from invalidating this off-chain transaction by
+double-spending the coin they used to bid. For this reason, the name owner must
+routinely check that all submitted bids are still valid. They can try finalizing
+the highest bid and if that fails, try to finalize the second-highest bid, etc.</p><p>More advanced constructions may be possible to more effectively prevent this,
+see the next section for one possible extension.</p><h3 id=locked-bids-mode>&ldquo;Locked bids&rdquo; mode</h3><p>To ensure that bids are funded by reliable outputs, the bidder and name owner
+can engage in a time-lock multisig contract that will ensure the bids are valid
+until the end of the auction. Bidders will effectively be &ldquo;locking up&rdquo; their bids
+for the duration of the auction. After the auction expiry time, bidders can &ldquo;redeem&rdquo; their
+losing bids with (almost) no potential grief. This pattern should be very familiar to
+Handshake users!</p><p><strong>OPEN:</strong> Name owners must include extra metadata in their auction announcement:</p><ol><li><p>An indication that all bids must be submitted using this mode, or they will be ignored.</p></li><li><p>An auction expiration time, set by blockchain height: <code>expiration_height</code></p></li><li><p>A public key from the name owner&rsquo;s wallet that they can sign transactions with: <code>owner_pk</code></p></li></ol><p><strong>BID:</strong> When a user wants to submit a bid for this name, they follow these steps:</p><ol><li><p>Derive a public key from their wallet that they can sign with: <code>bidder_pk</code></p></li><li><p>Combine their key and the auction announcement data into the script below: <code>bid_lock_script</code></p></li><li><p>Derive the corresponding address for that script and send their bid amount to that address: <code>bid_lock_tx</code></p></li><li><p>Construct a partially-signed TX <code>bid_submit_tx</code> as defined in <a href=#auction-bid>Auction BID</a> but with the following modifications:</p><ol><li><p>Input 1 of this transaction will spend the UTXO created by <code>bid_lock_tx</code></p></li><li><p>The redeem script in the witness of input 1 will be a partially-signed multisig spend defined below as <code>bid_submit_script</code>,
+with a single <code>0x00</code> byte as a placeholder for the name owner&rsquo;s signature.</p></li></ol></li><li><p>Bidder submits the following data to the name owner:</p><ol><li><p><code>bid_lock_script</code> with all data inserted such that the name owner can verify it
+matches the address in the output of <code>bid_lock_tx</code>.</p></li><li><p>The double-partially-signed <code>bid_submit_tx</code> (which will explicitly indicate the outpoint of the UTXO created by <code>bid_lock_tx</code>)</p></li></ol></li></ol><p><strong>FINALIZE:</strong> The name owner must finalize the atomic swap BEFORE <code>expiration_height</code>:</p><ol><li><p>Name owner chooses the highest bid and verifies that its <code>bid_lock_tx</code> is confirmed on chain,
+and that the output address is spendable by <code>bid_lock_script</code>. They construct a final TX as
+defined in <a href=#auction-finalize>Auction FINALIZE</a>:</p><ol><li><p>Name owner inserts their self-payment (minus miner fee) at output 1 like normal.</p></li><li><p>Name owner signs the name-owning UTXO into a TRANSFER at input 0 like normal.</p></li><li><p>Name owner must now also COMPLETE THE MULTISIG in input 1 to fund the transaction.
+This is accomplished by filling in <code>owner_sig</code> in the incomplete <code>bid_submit_script</code>
+that the bidder has included in the witness of <code>bid_submit_tx</code>.</p></li></ol></li></ol><p><strong>REDEEM:</strong> If the bidder loses the auction or if for any reason the <code>expiration_height</code> is
+reached without their <code>bid_lock_tx</code> output being spent into an atomic swap, they can
+refund their bid value using <code>bid_redeem_script</code> below. That refund transaction MUST
+have a locktime set at <code>expiration_height</code> and of course can not be submitted until that time.</p><p>The only potential grief attack is a race condition after <code>expiration_height</code> has been reached
+in which both spending paths are valid: the name owner can still complete the atomic swap, and the
+bidder can now submit a refund. However, if the name owner has already completed the auction
+and finalized a &ldquo;winner&rdquo; then only the refund path is valid.</p><p><strong>bid_lock_script</strong>:</p><pre><code>OP_IF
+  OP_2
+    &lt;owner_pk&gt;
+    &lt;bidder_pk&gt;
+  OP_2
+  OP_CHECKMULTISIG
+OP_ELSE
+  &lt;expiration_height&gt;
+  OP_CHECKLOCKTIMEVERIFY
+  OP_DROP
+  &lt;bidder_pk&gt;
+  OP_CHECKSIG
+OP_ENDIF
+</code></pre><p><strong>bid_submit_script</strong>:</p><pre><code>OP_1
+0x00 # placeholder for &lt;owner_sig&gt;
+&lt;bidder_sig&gt;
+</code></pre><p><strong>bid_redeem_script</strong>:</p><pre><code>OP_0
+&lt;bidder_sig&gt;
+</code></pre><h3 id=a-semi-custodial-platform-could-help-ensure-auction-finality>A semi-custodial platform could help ensure auction finality</h3><p>One possible scenario with this protocol is that the name owner never finalizes
+any bids. They might have decided a &ldquo;reserve price&rdquo; was not met or just changed
+their mind about the sale. One technique that may be used to ensure bidders that
+a winner will be chosen by a certain time is to include a trusted moderator.</p><p>Auctions could be held on a platform like Shakedex or run by an agency with a
+good reputation like Namebase or Kyokan. This agent would publish a static public
+key for their platform, and name owners would have to incorporate that key along
+with a relative locktime into the HIP-0001 locking script like so:</p><pre><code>OP_TYPE
+0x09 // TRANSFER
+OP_EQUAL
+OP_IF
+  OP_IF
+    &lt;name-owner's public key&gt;
+  OP_ELSE
+    &lt;timespan of auction&gt;
+    OP_CSV
+    OP_DROP
+    &lt;platform's public key&gt;
+  OP_ENDIF
+  OP_CHECKSIG
+OP_ELSE
+  OP_TYPE
+  0x0a // FINALIZE
+  OP_EQUAL
+OP_ENDIF
+</code></pre><p>What this does is add a rule to the locking script such that, after a certain amount
+of time (i.e. 5 days) the platform operator can finalize the auction with their own
+private key instead of waiting for the name owner to do so. Technically this means that if
+the name owner does not finalize the auction in time (or simply transfer the name back to
+themselves &ndash; publicly ending the auction on the blockchain) the platform can
+<em>steal the name OR the value of the highest bid</em>. In some cases, this may be the actual
+terms-of-service. In more common cases we can assume a platform with interest in
+maintaining a good reputation would award the highest bidder with the name and
+pay the name owner from output 1 of the final transaction.</p><p>A commercial platform could also improve auction quality by regularly performing the
+offline bid-validity checks mentioned in the previous section. The platform would
+have to be trusted (via reputation) to perform this job correctly or some bids may be
+censored.</p><h3 id=where--when>Where & When</h3><p>Because this auction protocol is interactive, bidders need a place to send their
+partially-signed transactions where they are accessible to the name owner to finalize.
+A name owner could therefore open an auction by adding TXT records to their zone
+announcing the endpoint to send bids, along with the redeem script to prove the name
+is locked by HIP-0001! Once this UPDATE has been sent, users just need to wait
+for the name owner to FINALIZE the transfer to the HIP-0001 address, and the auction is LIVE!</p><hr><div class=info><strong>HIP:</strong><div>0006</div><strong>Status:</strong><div><a href=/HIPs/status/final>Final</a></div><strong>Type:</strong><div><a href=/HIPs/category/informational>Informational</a></div><strong>Created:</strong><div>Thu, 17 Jun 2021</div><strong>Last commit:</strong><div>Mon, 12 Jul 2021</div><strong>Author:</strong><div>Matthew Zipkin (@pinheadmz)</div></div><hr><a href=https://github.com/handshake-org/HIPs/blob/master/HIP-0006.md>Edit on GitHub</a></div></section><aside><h2>Table of Contents</h2><nav id=TableOfContents><ul><li><a href=#abstract>Abstract</a></li><li><a href=#definitions>Definitions</a></li><li><a href=#protocol-summary>Protocol Summary</a><ul><li><a href=#auction-open>Auction OPEN</a></li><li><a href=#auction-bid>Auction BID</a></li><li><a href=#auction-finalize>Auction FINALIZE</a></li></ul></li><li><a href=#extra-notes>Extra Notes</a><ul><li><a href=#bids-must-remain-valid-off-chain>Bids must remain valid off-chain</a></li><li><a href=#locked-bids-mode>&ldquo;Locked bids&rdquo; mode</a></li><li><a href=#a-semi-custodial-platform-could-help-ensure-auction-finality>A semi-custodial platform could help ensure auction finality</a></li><li><a href=#where--when>Where & When</a></li></ul></li></ul></nav></aside></article></main><footer id=footer>©&nbsp;2021 Handshake Community<a rel=license href=http://creativecommons.org/licenses/by-sa/4.0/>(Creative
+Commons Attribution-ShareAlike 4.0 International License)</a></footer></body></html>
