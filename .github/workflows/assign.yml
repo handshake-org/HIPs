@@ -1,0 +1,46 @@
+name: The Janitor
+on:
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  assign:
+    name: Assign new HIP number
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'janitor:assign') }}
+
+    steps:
+      - name: Retrieve last HIP number
+        id: janitor
+        run: |
+          mkdir .janitor
+          sia=`curl "https://siasky.net/skynet/registry?publickey=ed25519%3A711d4cac92e72cdf7e26077a2c597cd3b467375b89a9320d77ff5a4f02c266ae&datakey=0f2381dca89efcc3d4d1d1b7efd663a0515be538e2a7c3bff01469961fc916be" -s | cut -c10-101 | xxd -r -p`
+          last=`curl https://siasky.net/$sia/assign -s`
+          next="$((last + 1))"
+          echo $next > .janitor/assign
+          echo "::set-output name=next::$(printf %4s $next | tr ' ' 0)"
+        shell: bash
+      - uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "**Assigning new HIP number**\nPlease, update this PR and use `HIP-${{ steps.janitor.outputs.next }}`"
+            })
+            github.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: "janitor:assign"
+            })
+
+      - name: Save to Skynet
+        uses: kwypchlo/deploy-to-skynet-action@main
+        continue-on-error: true # it will fail to comment
+        with:
+          upload-dir: .janitor
+          registry-seed: ${{ secrets.REGISTRY_SEED || '' }}
