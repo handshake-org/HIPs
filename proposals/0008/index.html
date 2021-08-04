@@ -1,28 +1,102 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width"><link rel=stylesheet href=https://hsd-dev.org/css/main.css><link rel=stylesheet href=https://hsd-dev.org/css/github-markdown.min.css><link rel=stylesheet href=/HIPs/css/style.css><title>Recoverable Bid Values - Handshake Improvement Proposals</title><link rel=icon type=image/x-icon href=https://handshake.org/img/favicon/hns-favicon.ico><title>Handshake Improvement Proposals</title><meta name=title content="Recoverable Bid Values"><meta name=description content="HIP-0008\nCategory: Standards\nStatus: Draft"><meta name=author content="Fernando Falci <http://iamfernando/>"><meta name=author content="Matthew Zipkin <pinheadmz@gmail.com>"><meta property="og:type" content="website"><meta property="og:url" content="https://hsd-dev.org/HIPs/proposals/0008/"><meta property="og:title" content="Recoverable Bid Values"><meta property="og:description" content="HIP-0008\nCategory: Standards\nStatus: Draft"><meta property="og:image" content="https://hsd-dev.org/img/logo.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://hsd-dev.org/HIPs/proposals/0008/"><meta property="twitter:title" content="Recoverable Bid Values"><meta property="twitter:description" content="HIP-0008\nCategory: Standards\nStatus: Draft"><meta property="twitter:image" content="https://hsd-dev.org/img/logo.svg"></head><body><header><a href=/><img alt="Handshake logo" src=https://hsd-dev.org/img/logo.svg></a></header><main><nav><div class=wrapper><ul><li><strong>HIPs</strong></li><li><a href=/HIPs/>Home</a></li><li><a href=/HIPs/proposals/>Proposals</a></li><li><a href=https://t.me/hns_tech>Tech Chat</a></li></ul><ul><li><strong class=upper>category</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/informational>Informational</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards>Standards</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards-track>Standards track</a></li></ul><ul><li><strong class=upper>status</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/draft>Draft</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/final>Final</a></li></ul></div></nav><article class=page><section class=markdown-body><h2>HIP-0008: Recoverable Bid Values</h2><h2 id=abstract>Abstract</h2><p>We propose a method for embedding encrypted bid values on the blockchain using
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width">
+<link rel=stylesheet href=https://hsd-dev.org/css/main.css>
+<link rel=stylesheet href=https://hsd-dev.org/css/github-markdown.min.css>
+<link rel=stylesheet href=/HIPs/css/style.css>
+<title>Recoverable Bid Values - Handshake Improvement Proposals</title>
+<link rel=icon type=image/x-icon href=https://handshake.org/img/favicon/hns-favicon.ico>
+<title>Handshake Improvement Proposals</title>
+<meta name=title content="Recoverable Bid Values">
+<meta name=description content="HIP-0008\nCategory: Standards\nStatus: Draft">
+<meta name=author content="Fernando Falci <http://iamfernando/>">
+<meta name=author content="Matthew Zipkin <pinheadmz@gmail.com>">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hsd-dev.org/HIPs/proposals/0008/">
+<meta property="og:title" content="Recoverable Bid Values">
+<meta property="og:description" content="HIP-0008\nCategory: Standards\nStatus: Draft">
+<meta property="og:image" content="https://hsd-dev.org/img/logo.svg">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://hsd-dev.org/HIPs/proposals/0008/">
+<meta property="twitter:title" content="Recoverable Bid Values">
+<meta property="twitter:description" content="HIP-0008\nCategory: Standards\nStatus: Draft">
+<meta property="twitter:image" content="https://hsd-dev.org/img/logo.svg">
+</head><body>
+<header>
+<a href=/><img alt="Handshake logo" src=https://hsd-dev.org/img/logo.svg></a>
+</header>
+<main>
+<nav>
+<div class=wrapper>
+<ul>
+<li><strong>HIPs</strong></li>
+<li><a href=/HIPs/>Home</a></li>
+<li><a href=/HIPs/proposals/>Proposals</a></li>
+<li><a href=https://t.me/hns_tech>Tech Chat</a></li>
+</ul>
+<ul>
+<li><strong class=upper>category</strong></li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/informational>Informational</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/standards>Standards</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/standards-track>Standards track</a>
+</li>
+</ul>
+<ul>
+<li><strong class=upper>status</strong></li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/status/draft>Draft</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/status/final>Final</a>
+</li>
+</ul>
+</div>
+</nav>
+<article class=page>
+<section class=markdown-body>
+<h2>HIP-0008: Recoverable Bid Values</h2>
+<h2 id=abstract>Abstract</h2>
+<p>We propose a method for embedding encrypted bid values on the blockchain using
 <code>nulldata</code> outputs. Values are encrypted using a combination of a user&rsquo;s private key
-and other data recoverable from the blockchain.</p><h2 id=motivation>Motivation</h2><p>The Handshake reference implementation (hsd) includes a wallet (hsw) that mostly conforms to
+and other data recoverable from the blockchain.</p>
+<h2 id=motivation>Motivation</h2>
+<p>The Handshake reference implementation (hsd) includes a wallet (hsw) that mostly conforms to
 <a href=https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki>BIP44</a>. The goal of
 BIP44 is to allow a recovery process whereby a user could restore the complete state
 of their wallet using only their wallet&rsquo;s master private key (usually encoded
 by a <a href=https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki>BIP39 seed phrase</a>)
-and all the public data available on the blockchain.</p><p>If a user executes a BIP44 wallet recovery after they have placed a BID on a name
+and all the public data available on the blockchain.</p>
+<p>If a user executes a BIP44 wallet recovery after they have placed a BID on a name
 auction but before the REVEAL, their wallet database will be missing the secret
 nonce which is used to blind the BID. The nonce is required by consensus rules to be
 included in the REVEAL covenant along with the raw bid value. Since REVEAL transactions
 are only valid for 10 days and failure to reveal results in permanent loss of funds,
-the incomplete recovery process may leave users in a dangerous state.</p><p>The nonce used in bids (and presented in the REVEAL) has no consensus restrictions
+the incomplete recovery process may leave users in a dangerous state.</p>
+<p>The nonce used in bids (and presented in the REVEAL) has no consensus restrictions
 except that it has to be 32 bytes. Users can use totally random data for the nonce
 or even 32 bytes of <code>0x00</code>. They can re-use the same nonce forever if they want,
 but of course these options may pose extra challenges to software implementation,
-wallet recovery, or the secrecy of their bids.</p><p>hsw uses a deterministic algorithm to generate nonces. This way they can be stored
+wallet recovery, or the secrecy of their bids.</p>
+<p>hsw uses a deterministic algorithm to generate nonces. This way they can be stored
 in the database for optimal performance, but they can also be regenerated if all the
 inputs to the deterministic algorithm are available. Most of these inputs are available
-on the blockchain but unfortunately one datum is not: the value of the secret bid.</p><p>If a user attempts a BIP44 recovery with unrevealed bids on the blockchain,
+on the blockchain but unfortunately one datum is not: the value of the secret bid.</p>
+<p>If a user attempts a BIP44 recovery with unrevealed bids on the blockchain,
 they will not be able to reveal those bids unless they remember the secret bid value
 they used in the first place. With 2,040,000,000,000,000 possible values, brute forcing
-the space is possible but certainly inconvenient!</p><p>Therefore, we introduce a method of storing the secret bid value on chain but encrypted
-in such a way that it can be recovered by the user using BIP44.</p><h2 id=background>Background</h2><p><code>||</code> denotes concatenation.
-<code>^</code> denotes bitwise XOR.</p><h3 id=consensus-rules>Consensus rules</h3><pre><code>// BID output:
+the space is possible but certainly inconvenient!</p>
+<p>Therefore, we introduce a method of storing the secret bid value on chain but encrypted
+in such a way that it can be recovered by the user using BIP44.</p>
+<h2 id=background>Background</h2>
+<p><code>||</code> denotes concatenation.
+<code>^</code> denotes bitwise XOR.</p>
+<h3 id=consensus-rules>Consensus rules</h3>
+<pre><code>// BID output:
   value     8 bytes
   address   var
 
@@ -42,25 +116,50 @@ in such a way that it can be recovered by the user using BIP44.</p><h2 id=backgr
   nonce     32 bytes
 
 assert(BID.blind === Blake2b(BID.value || REVEAL.nonce))
-</code></pre><h3 id=hsw-nonce-generation-algorithm>hsw nonce generation algorithm</h3><p>hsw generates a nonce based on the name being bid on, the secret value of the bid,
-and the address in the output with the BID covenant.</p><p><em>(pseudo-code)</em></p><pre><code>generateNonce(BID, wallet) {
+</code></pre><h3 id=hsw-nonce-generation-algorithm>hsw nonce generation algorithm</h3>
+<p>hsw generates a nonce based on the name being bid on, the secret value of the bid,
+and the address in the output with the BID covenant.</p>
+<p><em>(pseudo-code)</em></p>
+<pre><code>generateNonce(BID, wallet) {
   const index = BID.value;
   const publicKey = wallet.account.derivePublicKeyAtIndex(index);
   const nonce = Blake2b(BID.address.hash || publicKey || BID.nameHash);
   return nonce;
 }
-</code></pre><h3 id=nulldata-address><code>nulldata</code> address</h3><p>Similar to the <code>OP_RETURN</code> opcode in Bitcoin, Handshake allows users to push
-arbitrary data onto the blockchain using a special type of address:</p><pre><code>version: 31 (1 byte)
+</code></pre><h3 id=nulldata-address><code>nulldata</code> address</h3>
+<p>Similar to the <code>OP_RETURN</code> opcode in Bitcoin, Handshake allows users to push
+arbitrary data onto the blockchain using a special type of address:</p>
+<pre><code>version: 31 (1 byte)
 hash:       (2-40 bytes)
-</code></pre><p>Standardness rules enforce a limit of only 1 nulldata output per transaction.</p><h3 id=bip32-path-generation>BIP32 path generation</h3><p>Recall from <a href=https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki>BIP32</a>
+</code></pre><p>Standardness rules enforce a limit of only 1 nulldata output per transaction.</p>
+<h3 id=bip32-path-generation>BIP32 path generation</h3>
+<p>Recall from <a href=https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki>BIP32</a>
 that keys are derived from a series of 4-byte indexes. Indexes lower than <code>0x7fffffff</code>
 are derived using non-hardened derivation, which is required if an algorithm
-only has access to the public key.</p><h2 id=encrypting-bid-values-for-recovery>Encrypting bid values for recovery</h2><p>Since HNS values are always 8 bytes, there is no need for an encrypted value
+only has access to the public key.</p>
+<h2 id=encrypting-bid-values-for-recovery>Encrypting bid values for recovery</h2>
+<p>Since HNS values are always 8 bytes, there is no need for an encrypted value
 to be any other size (a 32-byte ciphertext doesn&rsquo;t obfuscate anything about
 the value that an 8-byte ciphertext wouldn&rsquo;t). We encrypt the bid value by generating
 a <code>key</code> from available data, and XORing that key with the bid value. The exact same
-algorithm is used to decrypt.</p><h3 id=generate-key>Generate key</h3><ol><li>Begin with the 32-byte <code>nameHash</code>.<ol><li>Slice the <code>nameHash</code> into 8 chunks of 4 bytes.</li><li>Use the name auction&rsquo;s starting <code>height</code> as the 9th chunk.</li><li>Bitwise-AND each chunk with <code>0x7fffffff</code>.</li></ol></li><li>Starting with the wallet account&rsquo;s master public key, derive a child public
-key using the path generated by the array of chunks in step 1. This is the <code>publicKey</code>.</li><li>Compute the Blake2b hash of <code>BID.address.hash || publicKey</code>.</li><li>Return the first 8 bytes of this hash. This is the <code>key</code>.</li></ol><h4 id=example>Example:</h4><p><em>(pseudo-code)</em></p><pre><code>const nameHash = 0x0000000011111111222222223333333344444444555555556666666677777777;
+algorithm is used to decrypt.</p>
+<h3 id=generate-key>Generate key</h3>
+<ol>
+<li>Begin with the 32-byte <code>nameHash</code>.
+<ol>
+<li>Slice the <code>nameHash</code> into 8 chunks of 4 bytes.</li>
+<li>Use the name auction&rsquo;s starting <code>height</code> as the 9th chunk.</li>
+<li>Bitwise-AND each chunk with <code>0x7fffffff</code>.</li>
+</ol>
+</li>
+<li>Starting with the wallet account&rsquo;s master public key, derive a child public
+key using the path generated by the array of chunks in step 1. This is the <code>publicKey</code>.</li>
+<li>Compute the Blake2b hash of <code>BID.address.hash || publicKey</code>.</li>
+<li>Return the first 8 bytes of this hash. This is the <code>key</code>.</li>
+</ol>
+<h4 id=example>Example:</h4>
+<p><em>(pseudo-code)</em></p>
+<pre><code>const nameHash = 0x0000000011111111222222223333333344444444555555556666666677777777;
 const height = 10000;
 const bidAddress= {
   version: 0
@@ -83,16 +182,21 @@ const key = hash.slice(0, 8);
 
 const encryptedValue = bidValue ^ key;
 const decryptedValue = encryptedValue ^ key;
-</code></pre><h3 id=transaction-structure>Transaction structure</h3><p>This protocol allows for a single transaction to include up to 5 BID outputs
+</code></pre><h3 id=transaction-structure>Transaction structure</h3>
+<p>This protocol allows for a single transaction to include up to 5 BID outputs
 plus one single nulldata output that contains encrypted values for all bids in order
 in which they appear in the transaction itself. This maximum of 5 comes from the
-40-byte limit of address hash data and the limit on nulldata outputs per transaction.</p><h4 id=example-1>Example</h4><p>Consider a transaction containing 5 BID outputs:</p><pre><code>output[0] = bid0
+40-byte limit of address hash data and the limit on nulldata outputs per transaction.</p>
+<h4 id=example-1>Example</h4>
+<p>Consider a transaction containing 5 BID outputs:</p>
+<pre><code>output[0] = bid0
 output[1] = bid1
 output[2] = bid2
 output[3] = bid3
 output[4] = bid4
 output[5] = nulldata
-</code></pre><p>The nulldata address in output[5] would be constructed like this:</p><pre><code>new Address({
+</code></pre><p>The nulldata address in output[5] would be constructed like this:</p>
+<pre><code>new Address({
   version: 31,
   hash: encryptedValue(bid0) ||
         encryptedValue(bid1) || 
@@ -100,16 +204,83 @@ output[5] = nulldata
         encryptedValue(bid3) || 
         encryptedValue(bid4)
 })
-</code></pre><h2 id=considerations>Considerations</h2><p>A wallet implementing this protocol <strong>MUST</strong> use a brand new address for every bid.
+</code></pre><h2 id=considerations>Considerations</h2>
+<p>A wallet implementing this protocol <strong>MUST</strong> use a brand new address for every bid.
 Software that uses the same address for more than one bid on the same name auction
 will end up using the same <code>key</code> for more than one encrypted value, potentially leaking
-secret values.</p><p>This protocol <strong>SHOULD</strong> be made optional for users with a setting or flag. The same
+secret values.</p>
+<p>This protocol <strong>SHOULD</strong> be made optional for users with a setting or flag. The same
 option <strong>MUST</strong> be passed to the software attempting to recover such a wallet. That
 wallet <strong>MUST</strong> check every transaction containing a BID covenant for the expected
 transaction structure (only contains 1-5 BIDs + one nulldata). When the encrypted
 metadata is discovered, the software <strong>SHOULD</strong> attempt to decrypt the secret value
 and then use its own <code>generateNonce()</code> function to verify that it has all the necessary
-data to generate a valid REVEAL.</p><h2 id=implementation>Implementation</h2><p>A simple exploration of the algorithms described here is implemented in a test
-for hsd in this branch: <a href=https://github.com/pinheadmz/hsd/blob/recoverable-bids1/test/wallet-recoverable-bids-test.js>https://github.com/pinheadmz/hsd/blob/recoverable-bids1/test/wallet-recoverable-bids-test.js</a></p><p>Pending further review and feedback, a formal pull request will be written to add
-this feature as an option to hsd and hsw.</p><hr><div class=info><strong>HIP:</strong><div>0008</div><strong>Status:</strong><div><a href=/HIPs/status/draft>Draft</a></div><strong>Type:</strong><div><a href=/HIPs/category/standards>Standards</a></div><strong>Created:</strong><div>Thu, 08 Jul 2021</div><strong>Last commit:</strong><div>Thu, 15 Jul 2021</div><strong>Authors:</strong><ul><li>Fernando Falci &lt;http://iamfernando/></li><li>Matthew Zipkin &lt;pinheadmz@gmail.com></li></ul></div><hr><a href=https://github.com/handshake-org/HIPs/blob/master/HIP-0008.md>Edit on GitHub</a></div></section><aside><h2>Table of Contents</h2><nav id=TableOfContents><ul><li><a href=#abstract>Abstract</a></li><li><a href=#motivation>Motivation</a></li><li><a href=#background>Background</a><ul><li><a href=#consensus-rules>Consensus rules</a></li><li><a href=#hsw-nonce-generation-algorithm>hsw nonce generation algorithm</a></li><li><a href=#nulldata-address><code>nulldata</code> address</a></li><li><a href=#bip32-path-generation>BIP32 path generation</a></li></ul></li><li><a href=#encrypting-bid-values-for-recovery>Encrypting bid values for recovery</a><ul><li><a href=#generate-key>Generate key</a></li><li><a href=#transaction-structure>Transaction structure</a></li></ul></li><li><a href=#considerations>Considerations</a></li><li><a href=#implementation>Implementation</a></li></ul></nav></aside></article></main><footer id=footer>©&nbsp;2021 Handshake Community<a rel=license href=http://creativecommons.org/licenses/by-sa/4.0/>(Creative
-Commons Attribution-ShareAlike 4.0 International License)</a></footer></body></html>
+data to generate a valid REVEAL.</p>
+<h2 id=implementation>Implementation</h2>
+<p>A simple exploration of the algorithms described here is implemented in a test
+for hsd in this branch: <a href=https://github.com/pinheadmz/hsd/blob/recoverable-bids1/test/wallet-recoverable-bids-test.js>https://github.com/pinheadmz/hsd/blob/recoverable-bids1/test/wallet-recoverable-bids-test.js</a></p>
+<p>Pending further review and feedback, a formal pull request will be written to add
+this feature as an option to hsd and hsw.</p>
+<hr>
+<div class=info>
+<strong>HIP:</strong>
+<div>0008</div>
+<strong>Status:</strong>
+<div>
+<a href=/HIPs/status/draft>
+Draft
+</a>
+</div>
+<strong>Type:</strong>
+<div>
+<a href=/HIPs/category/standards>
+Standards
+</a>
+</div>
+<strong>Created:</strong>
+<div>Thu, 08 Jul 2021</div>
+<strong>Last commit:</strong>
+<div>Wed, 04 Aug 2021</div>
+<strong>Authors:</strong>
+<ul>
+<li>Fernando Falci &lt;http://iamfernando/></li>
+<li>Matthew Zipkin &lt;pinheadmz@gmail.com></li>
+</ul>
+</div>
+<hr>
+<a href=https://github.com/handshake-org/HIPs/blob/master/HIP-0008.md>Edit on GitHub</a>
+</div>
+</section>
+<aside>
+<h2>Table of Contents</h2>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#abstract>Abstract</a></li>
+<li><a href=#motivation>Motivation</a></li>
+<li><a href=#background>Background</a>
+<ul>
+<li><a href=#consensus-rules>Consensus rules</a></li>
+<li><a href=#hsw-nonce-generation-algorithm>hsw nonce generation algorithm</a></li>
+<li><a href=#nulldata-address><code>nulldata</code> address</a></li>
+<li><a href=#bip32-path-generation>BIP32 path generation</a></li>
+</ul>
+</li>
+<li><a href=#encrypting-bid-values-for-recovery>Encrypting bid values for recovery</a>
+<ul>
+<li><a href=#generate-key>Generate key</a></li>
+<li><a href=#transaction-structure>Transaction structure</a></li>
+</ul>
+</li>
+<li><a href=#considerations>Considerations</a></li>
+<li><a href=#implementation>Implementation</a></li>
+</ul>
+</nav>
+</aside>
+</article>
+</main>
+<footer id=footer>
+©&nbsp;2021 Handshake Community<a rel=license href=http://creativecommons.org/licenses/by-sa/4.0/>(Creative
+Commons Attribution-ShareAlike 4.0 International License)</a>
+</footer>
+</body>
+</html>

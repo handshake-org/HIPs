@@ -1,7 +1,72 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width"><link rel=stylesheet href=https://hsd-dev.org/css/main.css><link rel=stylesheet href=https://hsd-dev.org/css/github-markdown.min.css><link rel=stylesheet href=/HIPs/css/style.css><title>Non-Interactive Name Atomic Swaps - Handshake Improvement Proposals</title><link rel=icon type=image/x-icon href=https://handshake.org/img/favicon/hns-favicon.ico><title>Handshake Improvement Proposals</title><meta name=title content="Non-Interactive Name Atomic Swaps"><meta name=description content="HIP-0001\nCategory: Standards Track\nStatus: Draft"><meta name=author content="Mark Tyneway <mark.tyneway@gmail.com>"><meta property="og:type" content="website"><meta property="og:url" content="https://hsd-dev.org/HIPs/proposals/0001/"><meta property="og:title" content="Non-Interactive Name Atomic Swaps"><meta property="og:description" content="HIP-0001\nCategory: Standards Track\nStatus: Draft"><meta property="og:image" content="https://hsd-dev.org/img/logo.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://hsd-dev.org/HIPs/proposals/0001/"><meta property="twitter:title" content="Non-Interactive Name Atomic Swaps"><meta property="twitter:description" content="HIP-0001\nCategory: Standards Track\nStatus: Draft"><meta property="twitter:image" content="https://hsd-dev.org/img/logo.svg"></head><body><header><a href=/><img alt="Handshake logo" src=https://hsd-dev.org/img/logo.svg></a></header><main><nav><div class=wrapper><ul><li><strong>HIPs</strong></li><li><a href=/HIPs/>Home</a></li><li><a href=/HIPs/proposals/>Proposals</a></li><li><a href=https://t.me/hns_tech>Tech Chat</a></li></ul><ul><li><strong class=upper>category</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/informational>Informational</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards>Standards</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards-track>Standards track</a></li></ul><ul><li><strong class=upper>status</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/draft>Draft</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/final>Final</a></li></ul></div></nav><article class=page><section class=markdown-body><h2>HIP-0001: Non-Interactive Name Atomic Swaps</h2><h2 id=abstract>Abstract</h2><p>This document proposes a standard way for Handshake names to be traded on a secondary market
-without the need of a trusted third party to act as an escrow.</p><h2 id=motivation>Motivation</h2><p>A healthy secondary market for Handshake names will bring more activity to the Handshake economy.
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width">
+<link rel=stylesheet href=https://hsd-dev.org/css/main.css>
+<link rel=stylesheet href=https://hsd-dev.org/css/github-markdown.min.css>
+<link rel=stylesheet href=/HIPs/css/style.css>
+<title>Non-Interactive Name Atomic Swaps - Handshake Improvement Proposals</title>
+<link rel=icon type=image/x-icon href=https://handshake.org/img/favicon/hns-favicon.ico>
+<title>Handshake Improvement Proposals</title>
+<meta name=title content="Non-Interactive Name Atomic Swaps">
+<meta name=description content="HIP-0001\nCategory: Standards Track\nStatus: Draft">
+<meta name=author content="Mark Tyneway <mark.tyneway@gmail.com>">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hsd-dev.org/HIPs/proposals/0001/">
+<meta property="og:title" content="Non-Interactive Name Atomic Swaps">
+<meta property="og:description" content="HIP-0001\nCategory: Standards Track\nStatus: Draft">
+<meta property="og:image" content="https://hsd-dev.org/img/logo.svg">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://hsd-dev.org/HIPs/proposals/0001/">
+<meta property="twitter:title" content="Non-Interactive Name Atomic Swaps">
+<meta property="twitter:description" content="HIP-0001\nCategory: Standards Track\nStatus: Draft">
+<meta property="twitter:image" content="https://hsd-dev.org/img/logo.svg">
+</head><body>
+<header>
+<a href=/><img alt="Handshake logo" src=https://hsd-dev.org/img/logo.svg></a>
+</header>
+<main>
+<nav>
+<div class=wrapper>
+<ul>
+<li><strong>HIPs</strong></li>
+<li><a href=/HIPs/>Home</a></li>
+<li><a href=/HIPs/proposals/>Proposals</a></li>
+<li><a href=https://t.me/hns_tech>Tech Chat</a></li>
+</ul>
+<ul>
+<li><strong class=upper>category</strong></li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/informational>Informational</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/standards>Standards</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/standards-track>Standards track</a>
+</li>
+</ul>
+<ul>
+<li><strong class=upper>status</strong></li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/status/draft>Draft</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/status/final>Final</a>
+</li>
+</ul>
+</div>
+</nav>
+<article class=page>
+<section class=markdown-body>
+<h2>HIP-0001: Non-Interactive Name Atomic Swaps</h2>
+<h2 id=abstract>Abstract</h2>
+<p>This document proposes a standard way for Handshake names to be traded on a secondary market
+without the need of a trusted third party to act as an escrow.</p>
+<h2 id=motivation>Motivation</h2>
+<p>A healthy secondary market for Handshake names will bring more activity to the Handshake economy.
 Without a solution for a decentralized secondary market, it is likely that most names will
-end up being managed on a custodial platform where there is liquidity for names.</p><p>After purchasing a name directly from the protocol, the name-owner must rely on an escrow
+end up being managed on a custodial platform where there is liquidity for names.</p>
+<p>After purchasing a name directly from the protocol, the name-owner must rely on an escrow
 to sell the name to a name-buyer. This adds friction to a secondary market developing,
 as escrows must be trusted and have the incentive to extract rent from the system. Transferring
 a name requires two transactions, a <code>TRANSFER</code> where the name owner commits to the witness
@@ -10,16 +75,21 @@ a minimum 288 blocks) where the name is finally under control of the new owner. 
 scheme is desired such that the name holder can simply publish a partially signed transaction
 that the name-buyer can fill in without needing any communication between counter-parties.
 This scheme can be used to emulate a decentralized secondary market, as long as the necessary
-data is made available.</p><h2 id=specification>Specification</h2><h3 id=swap-script>Swap Script</h3><p>Handshake builds on Bitcoin Script and introduces a new OP code called <code>OP_TYPE</code>.
+data is made available.</p>
+<h2 id=specification>Specification</h2>
+<h3 id=swap-script>Swap Script</h3>
+<p>Handshake builds on Bitcoin Script and introduces a new OP code called <code>OP_TYPE</code>.
 When this OP code is encountered while evaluating an input script, the covenant type
 of the corresponding <em>output</em> is pushed on to the stack. Covenant types are represented
 as integers (for example <code>BID</code> is <code>0x03</code> and <code>TRANSFER</code> is <code>0x09</code>). This can be used to construct
-a script that has different execution paths depending on which covenant is being created by the coin-spender.</p><p>For the name-buyer to be able to trust that the name-owner will not back out of the swap
+a script that has different execution paths depending on which covenant is being created by the coin-spender.</p>
+<p>For the name-buyer to be able to trust that the name-owner will not back out of the swap
 between the TRANSFER and FINALIZE actions, the ability to cancel the swap needs to be prevented.
 At the protocol level, this means that only <code>TRANSFER</code> and <code>FINALIZE</code> should be allowed.
 In addition, <strong>only</strong> the name-owner should be able to <code>TRANSFER</code> and to make the scheme non-interactive,
 &ldquo;anyone can <code>FINALIZE</code>&rdquo; &ndash; although we will also add a payment requirement in a different
-transaction output.</p><pre><code>OP_TYPE
+transaction output.</p>
+<pre><code>OP_TYPE
 0x09 // TRANSFER
 OP_EQUAL
 OP_IF
@@ -30,23 +100,30 @@ OP_ELSE
   0x0a // FINALIZE
   OP_EQUAL
 OP_ENDIF
-</code></pre><h3 id=signature-hash-flags>Signature Hash Flags</h3><p>The consensus rules dictate that the <code>TRANSFER</code> covenant data must commit to the
+</code></pre><h3 id=signature-hash-flags>Signature Hash Flags</h3>
+<p>The consensus rules dictate that the <code>TRANSFER</code> covenant data must commit to the
 address that the <code>FINALIZE</code> is eventually spent to. Since the address of the name-buyer
 is unknown by the name-owner, the <code>TRANSFER</code> covenant cannot be committed to by the
 name-owner&rsquo;s signature. The name-owner however <strong>can</strong> commit to a second transaction
-output that pays themselves for the value that they are willing to sell the name for.</p><p>This is possible with <code>SIGHASH_SINGLEREVERSE</code> as it will commit to the output at the opposite
+output that pays themselves for the value that they are willing to sell the name for.</p>
+<p>This is possible with <code>SIGHASH_SINGLEREVERSE</code> as it will commit to the output at the opposite
 index as the input being signed. For example, if the first input is signed with
 <code>SIGHASH_SINGLEREVERSE</code>, then only the last output will be committed to.
 The name-owner would like the name-buyer to be able to add in an input that has enough value
 to create a valid transaction, so <code>SIGHASH_ANYONECANPAY</code> must be used as a modifier.
-Ultimately, This scheme must use the signature hash flag <code>SINGLEREVERSE | ANYONECANPAY</code>.</p><h3 id=transaction-structure>Transaction Structure</h3><p>The name-owner will publish a partially-signed transaction like this:</p><pre><code>vin:
+Ultimately, This scheme must use the signature hash flag <code>SINGLEREVERSE | ANYONECANPAY</code>.</p>
+<h3 id=transaction-structure>Transaction Structure</h3>
+<p>The name-owner will publish a partially-signed transaction like this:</p>
+<pre><code>vin:
   0: current name owner, encumbered by Swap Script
 vout:
   0: (null)
   1: payment to name-owner
 </code></pre><p>This transaction is not currently valid. The signature in <code>vin[0]</code> is flagged with <code>SINGLEREVERSE | ANYONECANPAY</code>,
 meaning the content of <code>vout[1]</code> can not be changed, but additional inputs and outputs
-can still be added to this transaction.</p><p>The name-buyer will take this transaction and complete it:</p><pre><code>vin:
+can still be added to this transaction.</p>
+<p>The name-buyer will take this transaction and complete it:</p>
+<pre><code>vin:
   0: current name owner, encumbered by Swap Script
   1: name-buyer's input coin (funds transaction)
 vout:
@@ -54,17 +131,33 @@ vout:
   1: name-buyer's change
   2: payment to name-owner
 </code></pre><p>Note that even though <code>payment to name-owner</code> has been bumped from index <code>1</code> to
-index <code>2</code>, it is still the &ldquo;reverse&rdquo; of the input with the name-owner&rsquo;s signature.</p><h3 id=swap-proof>Swap Proof</h3><p>The Swap Proof includes all of the data that must be made available for a name-buyer to trust
+index <code>2</code>, it is still the &ldquo;reverse&rdquo; of the input with the name-owner&rsquo;s signature.</p>
+<h3 id=swap-proof>Swap Proof</h3>
+<p>The Swap Proof includes all of the data that must be made available for a name-buyer to trust
 that the name is up for sale. Note that verification of this data structure depends on verifying
-that the UTXO that holds the name exists.</p><p>A Swap Proof includes:</p><ul><li>Name</li><li>Swap Script</li><li>Signature</li><li>Value</li></ul><p>The name could be substituted for the outpoint for the name, as long as the verifier can
+that the UTXO that holds the name exists.</p>
+<p>A Swap Proof includes:</p>
+<ul>
+<li>Name</li>
+<li>Swap Script</li>
+<li>Signature</li>
+<li>Value</li>
+</ul>
+<p>The name could be substituted for the outpoint for the name, as long as the verifier can
 easily verify that the UTXO representing the name does exist. Ease of integration into user
 interfaces should be taken into account here. The Swap Script must be hashed with SHA3-256
-and compared against the locking script for the name locking the UTXO.</p><h2 id=protocol-design>Protocol Design</h2><h3 id=setup-phase>Setup Phase</h3><p>The name-owner must <code>TRANSFER</code> and <code>FINALIZE</code> their name to the Swap Script and make the Swap Proof available.
+and compared against the locking script for the name locking the UTXO.</p>
+<h2 id=protocol-design>Protocol Design</h2>
+<h3 id=setup-phase>Setup Phase</h3>
+<p>The name-owner must <code>TRANSFER</code> and <code>FINALIZE</code> their name to the Swap Script and make the Swap Proof available.
 This enables the protocol to be non-interactive. There are many options for making the proof
-available and is out of scope for this document.</p><h3 id=trade>Trade</h3><p>The name-buyer has the Swap Proof and must verify it. To do so, they must check that the
+available and is out of scope for this document.</p>
+<h3 id=trade>Trade</h3>
+<p>The name-buyer has the Swap Proof and must verify it. To do so, they must check that the
 name exists on chain, reconstruct the partially-signed transaction and verify the signature.
 The Swap Script must be verified that it matches the template and prevents the buyer from
-opting out of the atomic swap.</p><p>The name-buyer adds an input that fulfills the value desired by the name seller, adds a
+opting out of the atomic swap.</p>
+<p>The name-buyer adds an input that fulfills the value desired by the name seller, adds a
 change output such that it is not the last output and produces a signature using <code>SIGHASH_ALL</code>.
 This transaction can now be broadcast to the network. After the transfer timeout elapses (288 blocks),
 the UTXO is in an anyone-can-spend state because no signature checks are required in the Swap Script.
@@ -72,12 +165,16 @@ The name-buyer can follow up with the <code>FINALIZE</code> transaction
 to themselves and take control of the name. Note that since the name-buyer&rsquo;s address is
 committed to in the <code>TRANSFER</code>, there is no risk created by &ldquo;anyone&rdquo; spending the output.
 Anyone willing to pay a miner fee can finish the protocol on behalf of the name-buyer,
-but the name-buyer will likely do so themselves.</p><h3 id=offer-discovery>Offer Discovery</h3><p>Offer discovery is out of scope for this HIP but needs to be considered in its design.
+but the name-buyer will likely do so themselves.</p>
+<h3 id=offer-discovery>Offer Discovery</h3>
+<p>Offer discovery is out of scope for this HIP but needs to be considered in its design.
 Ideally there is a standard way to make offers available. This is possible with an additional
 p2p protocol like <a href=https://wiki.bitmessage.org/>Bitmessage</a> or <a href=https://ethersphere.github.io/swarm-home/>Swarm</a>.
 This design hasn&rsquo;t been the most successful in the past. Potentially <a href=https://sia.tech/>Sia</a>
 could be leveraged or a simple open source website that aggregates offers, similar to a PGP
-server.</p><h3 id=timelock-auctions>Timelock Auctions</h3><p>It is possible to simulate a <a href=https://en.wikipedia.org/wiki/Dutch_auction>Dutch Auction</a>
+server.</p>
+<h3 id=timelock-auctions>Timelock Auctions</h3>
+<p>It is possible to simulate a <a href=https://en.wikipedia.org/wiki/Dutch_auction>Dutch Auction</a>
 with this protocol. The name-owner can create multiple partially-signed transactions
 in a series. Each transaction in the series has a decreased payout-to-name-owner value
 and an increased <a href=https://en.bitcoin.it/wiki/NLockTime><code>locktime</code></a>.
@@ -87,5 +184,71 @@ for sale at a high price, but this price decreases over time until a name-buyer 
 the latest valid offer and completes the protocol. After enough time without such a completion,
 all the partially-signed transactions will be valid. The name-owner can &ldquo;cancel&rdquo; the auction
 by either &ldquo;buying&rdquo; their own name for the lowest price or simply by signing a <code>TRANSFER</code>
-of the name back to their own wallet without any payment being required.</p><h2 id=implementation>Implementation</h2><p><a href=https://github.com/kurumiimari/shakedex>https://github.com/kurumiimari/shakedex</a></p><h2 id=acknowledgments>Acknowledgments</h2><p><a href=https://github.com/kurumiimari>@kurumiimari</a> for implementing this proposal into a working auction system and introducing the idea of the &ldquo;Dutch&rdquo; auction.</p><p><a href=https://github.com/pinheadmz>@pinheadmz</a> for optimizing the locking script and this document.</p><hr><div class=info><strong>HIP:</strong><div>0001</div><strong>Status:</strong><div><a href=/HIPs/status/draft>Draft</a></div><strong>Type:</strong><div><a href=/HIPs/category/standards-track>Standards Track</a></div><strong>Created:</strong><div>Wed, 05 Aug 2020</div><strong>Last commit:</strong><div>Thu, 15 Jul 2021</div><strong>Author:</strong><div>Mark Tyneway &lt;mark.tyneway@gmail.com></div></div><hr><a href=https://github.com/handshake-org/HIPs/blob/master/HIP-0001.md>Edit on GitHub</a></div></section><aside><h2>Table of Contents</h2><nav id=TableOfContents><ul><li><a href=#abstract>Abstract</a></li><li><a href=#motivation>Motivation</a></li><li><a href=#specification>Specification</a><ul><li><a href=#swap-script>Swap Script</a></li><li><a href=#signature-hash-flags>Signature Hash Flags</a></li><li><a href=#transaction-structure>Transaction Structure</a></li><li><a href=#swap-proof>Swap Proof</a></li></ul></li><li><a href=#protocol-design>Protocol Design</a><ul><li><a href=#setup-phase>Setup Phase</a></li><li><a href=#trade>Trade</a></li><li><a href=#offer-discovery>Offer Discovery</a></li><li><a href=#timelock-auctions>Timelock Auctions</a></li></ul></li><li><a href=#implementation>Implementation</a></li><li><a href=#acknowledgments>Acknowledgments</a></li></ul></nav></aside></article></main><footer id=footer>©&nbsp;2021 Handshake Community<a rel=license href=http://creativecommons.org/licenses/by-sa/4.0/>(Creative
-Commons Attribution-ShareAlike 4.0 International License)</a></footer></body></html>
+of the name back to their own wallet without any payment being required.</p>
+<h2 id=implementation>Implementation</h2>
+<p><a href=https://github.com/kurumiimari/shakedex>https://github.com/kurumiimari/shakedex</a></p>
+<h2 id=acknowledgments>Acknowledgments</h2>
+<p><a href=https://github.com/kurumiimari>@kurumiimari</a> for implementing this proposal into a working auction system and introducing the idea of the &ldquo;Dutch&rdquo; auction.</p>
+<p><a href=https://github.com/pinheadmz>@pinheadmz</a> for optimizing the locking script and this document.</p>
+<hr>
+<div class=info>
+<strong>HIP:</strong>
+<div>0001</div>
+<strong>Status:</strong>
+<div>
+<a href=/HIPs/status/draft>
+Draft
+</a>
+</div>
+<strong>Type:</strong>
+<div>
+<a href=/HIPs/category/standards-track>
+Standards Track
+</a>
+</div>
+<strong>Created:</strong>
+<div>Wed, 05 Aug 2020</div>
+<strong>Last commit:</strong>
+<div>Wed, 04 Aug 2021</div>
+<strong>Author:</strong>
+<div>Mark Tyneway &lt;mark.tyneway@gmail.com></div>
+</div>
+<hr>
+<a href=https://github.com/handshake-org/HIPs/blob/master/HIP-0001.md>Edit on GitHub</a>
+</div>
+</section>
+<aside>
+<h2>Table of Contents</h2>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#abstract>Abstract</a></li>
+<li><a href=#motivation>Motivation</a></li>
+<li><a href=#specification>Specification</a>
+<ul>
+<li><a href=#swap-script>Swap Script</a></li>
+<li><a href=#signature-hash-flags>Signature Hash Flags</a></li>
+<li><a href=#transaction-structure>Transaction Structure</a></li>
+<li><a href=#swap-proof>Swap Proof</a></li>
+</ul>
+</li>
+<li><a href=#protocol-design>Protocol Design</a>
+<ul>
+<li><a href=#setup-phase>Setup Phase</a></li>
+<li><a href=#trade>Trade</a></li>
+<li><a href=#offer-discovery>Offer Discovery</a></li>
+<li><a href=#timelock-auctions>Timelock Auctions</a></li>
+</ul>
+</li>
+<li><a href=#implementation>Implementation</a></li>
+<li><a href=#acknowledgments>Acknowledgments</a></li>
+</ul>
+</nav>
+</aside>
+</article>
+</main>
+<footer id=footer>
+©&nbsp;2021 Handshake Community<a rel=license href=http://creativecommons.org/licenses/by-sa/4.0/>(Creative
+Commons Attribution-ShareAlike 4.0 International License)</a>
+</footer>
+</body>
+</html>
