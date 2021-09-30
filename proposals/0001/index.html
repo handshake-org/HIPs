@@ -89,7 +89,7 @@ At the protocol level, this means that only <code>TRANSFER</code> and <code>FINA
 In addition, <strong>only</strong> the name-owner should be able to <code>TRANSFER</code> and to make the scheme non-interactive,
 &ldquo;anyone can <code>FINALIZE</code>&rdquo; &ndash; although we will also add a payment requirement in a different
 transaction output.</p>
-<pre><code>OP_TYPE
+<pre tabindex=0><code>OP_TYPE
 0x09 // TRANSFER
 OP_EQUAL
 OP_IF
@@ -114,7 +114,7 @@ to create a valid transaction, so <code>SIGHASH_ANYONECANPAY</code> must be used
 Ultimately, This scheme must use the signature hash flag <code>SINGLEREVERSE | ANYONECANPAY</code>.</p>
 <h3 id=transaction-structure>Transaction Structure</h3>
 <p>The name-owner will publish a partially-signed transaction like this:</p>
-<pre><code>vin:
+<pre tabindex=0><code>vin:
   0: current name owner, encumbered by Swap Script
 vout:
   0: (null)
@@ -123,7 +123,7 @@ vout:
 meaning the content of <code>vout[1]</code> can not be changed, but additional inputs and outputs
 can still be added to this transaction.</p>
 <p>The name-buyer will take this transaction and complete it:</p>
-<pre><code>vin:
+<pre tabindex=0><code>vin:
   0: current name owner, encumbered by Swap Script
   1: name-buyer's input coin (funds transaction)
 vout:
@@ -209,7 +209,7 @@ Standards Track
 <strong>Created:</strong>
 <div>Wed, 05 Aug 2020</div>
 <strong>Last commit:</strong>
-<div>Wed, 04 Aug 2021</div>
+<div>Thu, 30 Sep 2021</div>
 <strong>Author:</strong>
 <div>Mark Tyneway &lt;mark.tyneway@gmail.com></div>
 </div>

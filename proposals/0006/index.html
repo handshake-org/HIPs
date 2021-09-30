@@ -97,7 +97,7 @@ that announces every new bid as they arrive.</p>
 <h3 id=auction-bid>Auction BID</h3>
 <p>A user that wants to bid on the name constructs a partially-signed transaction in
 the following format:</p>
-<pre><code>vin:
+<pre tabindex=0><code>vin:
   0: current name owner, encumbered by Swap Script
   1: A UTXO controlled by the bidder of some value V
 vout:
@@ -128,7 +128,7 @@ to itself, creating a coin with the exact value desired. This output can be used
 <p>The name owner collects partially-signed bids and after some time, declares the highest
 value bid the winner. The name owner completes the auction by adding a payment output
 to the partially-signed transaction, signing and broadcasting:</p>
-<pre><code>vin:
+<pre tabindex=0><code>vin:
   0: current name owner, encumbered by Swap Script
   1: A UTXO controlled by the bidder of some value V
 vout:
@@ -238,7 +238,7 @@ in which both spending paths are valid: the name owner can still complete the at
 bidder can now submit a refund. However, if the name owner has already completed the auction
 and finalized a &ldquo;winner&rdquo; then only the refund path is valid.</p>
 <p><strong>bid_lock_script</strong>:</p>
-<pre><code>OP_IF
+<pre tabindex=0><code>OP_IF
   OP_2
     &lt;owner_pk&gt;
     &lt;bidder_pk&gt;
@@ -252,11 +252,11 @@ OP_ELSE
   OP_CHECKSIG
 OP_ENDIF
 </code></pre><p><strong>bid_submit_script</strong>:</p>
-<pre><code>OP_1
+<pre tabindex=0><code>OP_1
 0x00 # placeholder for &lt;owner_sig&gt;
 &lt;bidder_sig&gt;
 </code></pre><p><strong>bid_redeem_script</strong>:</p>
-<pre><code>OP_0
+<pre tabindex=0><code>OP_0
 &lt;bidder_sig&gt;
 </code></pre><h3 id=a-semi-custodial-platform-could-help-ensure-auction-finality>A semi-custodial platform could help ensure auction finality</h3>
 <p>One possible scenario with this protocol is that the name owner never finalizes
@@ -267,7 +267,7 @@ a winner will be chosen by a certain time is to include a trusted moderator.</p>
 good reputation like Namebase or Kyokan. This agent would publish a static public
 key for their platform, and name owners would have to incorporate that key along
 with a relative locktime into the HIP-0001 locking script like so:</p>
-<pre><code>OP_TYPE
+<pre tabindex=0><code>OP_TYPE
 0x09 // TRANSFER
 OP_EQUAL
 OP_IF
@@ -324,7 +324,7 @@ Informational
 <strong>Created:</strong>
 <div>Thu, 17 Jun 2021</div>
 <strong>Last commit:</strong>
-<div>Wed, 04 Aug 2021</div>
+<div>Thu, 30 Sep 2021</div>
 <strong>Author:</strong>
 <div>Matthew Zipkin (@pinheadmz)</div>
 </div>
