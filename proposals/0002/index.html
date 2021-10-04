@@ -61,22 +61,22 @@
 <section class=markdown-body>
 <h2>HIP-0002: Well Known directory for wallets address</h2>
 <h2 id=abstract>Abstract</h2>
-<p>This HIP describe how to publish a wallet address in a domain.</p>
+<p>This HIP describes how to publish a wallet address in a domain.</p>
 <h2 id=motivation>Motivation</h2>
-<p>Wallet address are not human friendly. Sending an address normally involves &ldquo;copy & paste&rdquo; and is near to impossible to do via voice channels.</p>
-<p>Since Handshake is all about owning domains, we could use them as alias to our wallet address.</p>
+<p>Wallet address are not human friendly. Sending an address normally involves &ldquo;copy & paste&rdquo; and is nearly impossible to do via voice channels.</p>
+<p>Since Handshake is all about owning domains, we could use them as aliases to our wallet addresses.</p>
 <h3 id=protocol>Protocol</h3>
-<p>The basics of this protocol consists in serving the address in an HTTPS request to the <a href=https://tools.ietf.org/html/rfc8615>.well-known diretory</a>. For security reasons, we should only HTTPS.</p>
+<p>The basics of this protocol consists of serving the address in an HTTPS request to the <a href=https://tools.ietf.org/html/rfc8615>.well-known directory</a>. For security reasons, should be done over HTTPS.</p>
 <p>The address should be located at <code>https://&lt;domain>/.well-known/wallets/SYMBOL</code>.</p>
-<p>For instance <code>https://example/.well-known/wallets/HNS</code>.</p>
+<p>For instance, <code>https://example/.well-known/wallets/HNS</code>.</p>
 <h3 id=dynamic-or-static>Dynamic or Static</h3>
 <p>This proposal doesn&rsquo;t define if the content served should be static (file in the disk) or dynamic (unique address per request).</p>
 <h3 id=security-concerns>Security Concerns</h3>
 <p>Requests should be made using only HTTPS. Handshake&rsquo;s HTTPS requests are secured by DANE & PoW.</p>
-<h3 id=non-hns-domain>Non HNS domain</h3>
+<h3 id=non-hns-domain>Non-HNS domain</h3>
 <p>This protocol can also be used with non-HNS domains (aka ICANN).</p>
 <p>In this case, the security would rely on CA. It should be a consumer choice to accept it or not.</p>
-<h3 id=non-cryptocurrency-address>Non cryptocurrency address</h3>
+<h3 id=non-cryptocurrency-address>Non-cryptocurrency address</h3>
 <p>It&rsquo;s also possible to define a non-crypto symbol, such as <code>/.well-known/wallets/USD</code>, which should return an <a href=https://www.iso.org/standard/41031.html>IBAN</a>.</p>
 <h2 id=references>References</h2>
 <p><a href=https://github.com/satoshilabs/slips/blob/master/slip-0044.md>SLIP-0044</a> can be used as a symbol reference.</p>
@@ -99,7 +99,7 @@ Informational
 <strong>Created:</strong>
 <div>Wed, 07 Oct 2020</div>
 <strong>Last commit:</strong>
-<div>Thu, 30 Sep 2021</div>
+<div>Mon, 04 Oct 2021</div>
 <strong>Authors:</strong>
 <ul>
 <li>Fernando Falci &lt;http://iamfernando/></li>
@@ -120,8 +120,8 @@ Informational
 <li><a href=#protocol>Protocol</a></li>
 <li><a href=#dynamic-or-static>Dynamic or Static</a></li>
 <li><a href=#security-concerns>Security Concerns</a></li>
-<li><a href=#non-hns-domain>Non HNS domain</a></li>
-<li><a href=#non-cryptocurrency-address>Non cryptocurrency address</a></li>
+<li><a href=#non-hns-domain>Non-HNS domain</a></li>
+<li><a href=#non-cryptocurrency-address>Non-cryptocurrency address</a></li>
 </ul>
 </li>
 <li><a href=#references>References</a></li>
