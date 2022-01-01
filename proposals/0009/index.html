@@ -1,0 +1,161 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width">
+<link rel=stylesheet href=https://hsd-dev.org/css/main.css>
+<link rel=stylesheet href=https://hsd-dev.org/css/github-markdown.min.css>
+<link rel=stylesheet href=/HIPs/css/style.css>
+<title>Standard Recoverable Script Addresses - Handshake Improvement Proposals</title>
+<link rel=icon type=image/x-icon href=https://handshake.org/img/favicon/hns-favicon.ico>
+<title>Handshake Improvement Proposals</title>
+<meta name=title content="Standard Recoverable Script Addresses">
+<meta name=description content="HIP-0009\nCategory: Standards\nStatus: Draft">
+<meta name=author content="Chi Kei Chan <chikeichan@gmail.com>">
+<meta name=author content="Matthew Zipkin <pinheadmz@gmail.com>">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hsd-dev.org/HIPs/proposals/0009/">
+<meta property="og:title" content="Standard Recoverable Script Addresses">
+<meta property="og:description" content="HIP-0009\nCategory: Standards\nStatus: Draft">
+<meta property="og:image" content="https://hsd-dev.org/img/logo.svg">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://hsd-dev.org/HIPs/proposals/0009/">
+<meta property="twitter:title" content="Standard Recoverable Script Addresses">
+<meta property="twitter:description" content="HIP-0009\nCategory: Standards\nStatus: Draft">
+<meta property="twitter:image" content="https://hsd-dev.org/img/logo.svg">
+</head><body>
+<header>
+<a href=/><img alt="Handshake logo" src=https://hsd-dev.org/img/logo.svg></a>
+</header>
+<main>
+<nav>
+<div class=wrapper>
+<ul>
+<li><strong>HIPs</strong></li>
+<li><a href=/HIPs/>Home</a></li>
+<li><a href=/HIPs/proposals/>Proposals</a></li>
+<li><a href=https://t.me/hns_tech>Tech Chat</a></li>
+</ul>
+<ul>
+<li><strong class=upper>category</strong></li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/informational>Informational</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/standards>Standards</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/category/standards-track>Standards track</a>
+</li>
+</ul>
+<ul>
+<li><strong class=upper>status</strong></li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/status/draft>Draft</a>
+</li>
+<li class=capitalize>
+<a href=https://hsd-dev.org/HIPs/status/final>Final</a>
+</li>
+</ul>
+</div>
+</nav>
+<article class=page>
+<section class=markdown-body>
+<h2>HIP-0009: Standard Recoverable Script Addresses</h2>
+<h2 id=abstract>Abstract</h2>
+<p>We propose a method for generating application-specific scripts and scripthash
+addresses by deriving key pairs from specific BIP44 branches.</p>
+<h2 id=motivation>Motivation</h2>
+<p>Secondary market protocols, like Shakedex (see <a href=https://hsd-dev.org/HIPs/proposals/0001/>HIP-1</a>),
+currently generate a new private key for each script address, which makes recovery
+possible only as long as the user has backed up each individual key they generate.
+By deterministically deriving script addresses using a standard BIP44 wallet seed,
+we can recover the user&rsquo;s auction listing and pending fills by importing the seed,
+re-generating the script addresses and re-scanning the blockchain.</p>
+<h3 id=bip32-path-generation>BIP32 path generation</h3>
+<p>Recall from <a href=https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki>BIP32</a>
+that keys are derived from a series of 4-byte indexes. Indexes lower than <code>0x7fffffff</code>
+are derived using non-hardened derivation, which is required if an algorithm
+only has access to the public key.</p>
+<h3 id=bip44-address-recovery>BIP44 address recovery</h3>
+<p>Recall from <a href=https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki>BIP44</a>
+that wallets using standard BIP32 paths can regenerate all of a user&rsquo;s private keys
+and addresses and then, by re-scanning the blockchain, restore the entire previous
+state of the wallet. The standard is common enough for interoperability between
+wallet implementations.</p>
+<p>BIP44 specifies the following derivation path using BIP32:</p>
+<pre tabindex=0><code>m' / purpose' / coin_type' / account' / branch / address_index 
+</code></pre><p>(note that <code>'</code> denotes hardened derivation)</p>
+<p>BIP44 also specifies the use of <code>purpose: 44'</code> and defines two branch indexes:</p>
+<ul>
+<li><code>0x00000000</code>: receive addresses (&ldquo;external&rdquo;)</li>
+<li><code>0x00000001</code>: change addresses (&ldquo;internal&rdquo;)</li>
+</ul>
+<p>Note that bcoin uniquely uses branch <code>0x00000002</code> for
+<a href=https://github.com/bcoin-org/bcoin/blob/531fb929e15d4275947ba2b11ae4fd246cdada30/lib/wallet/account.js#L411-L421>generating nested segwit addresses</a>.
+This is only used for Bitcoin of course but exists as &ldquo;prior art&rdquo; reference.</p>
+<h2 id=new-branch-definitions>New <code>branch</code> definitions</h2>
+<p>This HIP document should be maintained as a directory for new script address protocols.
+Proposals should follow the existing examples and these guidelines:</p>
+<ul>
+<li>&ldquo;branch&rdquo; is always expressed as four bytes in hexadecimal.</li>
+<li>&ldquo;name&rdquo; can be a casual identifier or application title.</li>
+<li>&ldquo;script&rdquo; should list the redeem script for the address using opcode symbols,
+and indicate in <code>{{double-curly-braces}}</code> where the BIP44-derived public key belongs in the script.
+Some protocols may require additional public keys from other accounts, etc and we
+invite those developers to extend the notation here as they see fit. Portions
+of this field may be left ambiguous as long as it is well-documented in attached links.</li>
+<li>&ldquo;notes / links&rdquo; should direct developers to additional documentation or
+existing implementations for further detail.</li>
+</ul>
+<hr>
+<div class=info>
+<strong>HIP:</strong>
+<div>0009</div>
+<strong>Status:</strong>
+<div>
+<a href=/HIPs/status/draft>
+Draft
+</a>
+</div>
+<strong>Type:</strong>
+<div>
+<a href=/HIPs/category/standards>
+Standards
+</a>
+</div>
+<strong>Created:</strong>
+<div>Thu, 21 Oct 2021</div>
+<strong>Last commit:</strong>
+<div>Sat, 01 Jan 2022</div>
+<strong>Authors:</strong>
+<ul>
+<li>Chi Kei Chan &lt;chikeichan@gmail.com></li>
+<li>Matthew Zipkin &lt;pinheadmz@gmail.com></li>
+</ul>
+</div>
+<hr>
+<a href=https://github.com/handshake-org/HIPs/blob/master/HIP-0009.md>Edit on GitHub</a>
+</div>
+</section>
+<aside>
+<h2>Table of Contents</h2>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#abstract>Abstract</a></li>
+<li><a href=#motivation>Motivation</a>
+<ul>
+<li><a href=#bip32-path-generation>BIP32 path generation</a></li>
+<li><a href=#bip44-address-recovery>BIP44 address recovery</a></li>
+</ul>
+</li>
+<li><a href=#new-branch-definitions>New <code>branch</code> definitions</a></li>
+</ul>
+</nav>
+</aside>
+</article>
+</main>
+<footer id=footer>
+©&nbsp;2021 Handshake Community<a rel=license href=http://creativecommons.org/licenses/by-sa/4.0/>(Creative
+Commons Attribution-ShareAlike 4.0 International License)</a>
+</footer>
+</body>
+</html>
