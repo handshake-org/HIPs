@@ -1,8 +1,8 @@
-# HIP-xxxx : Standard for TXT records
+# HIP-xxxx : TXT Record Naming Standard for Domain Listings
 
 ```
 Number:  HIP-xxxx
-Title:   Standard for TXT records
+Title:   TXT Record Naming Standard for Domain Listings
 Type:    Standards
 Status:  Draft
 Authors: 0xStefan <https://twitter.com/0xStefan>
@@ -11,153 +11,71 @@ Created: 2022-02-22
 
 ## Abstract
 
-A proposal for TXT record standards to provide on-chain data for a domain.
+A proposal to create a standard for the labels of string attributes in TXT records for domain listings — following the [RFC 1464](https://datatracker.ietf.org/doc/html/rfc1464) standard.
 
 ## Motivation
 
-#### Domain Parking
+If a domain is not listet on an open marketplace like Namebase or Shakedex, it's hard to know if a domain is for sale by the owner or not. Furthermore a domain seller has no reliable way to provide that information.
 
-There's currently no way to know if a domain is for sale by the owner or not.
-A domain seller has no reliable way to provide that information.
+## TXT Record Standard: Domain Listing
 
-#### Identity / Web3 Profile
+For the above to work we need standards so any website or app can properly render the TXT records. The records should be flexible, short and easy to understand. It is important to note, that it's impossible to validate the data via HSD. Therefore TXT records must be validated by the site or app that is rendering the TXT records.
 
-Websites using Sign in with Handshake can use and render the TXT record data, e.g. as profile information. The domain owner is still in control of the data.
+The general syntax for domain listings is:
 
-## TXT Standards Definition
+**TXT** `listing <attribute name>=<attribute value>`
 
-For the above to work we need standards so any website can properly render the TXT records. The records should be flexible, short and easy to understand. Since it's impossible to validate the data via HSD. Therefore TXT records should be provided mostly without any prefix like "mailto:", "tel:" or "https://www.twitter.com/".
+There are currently two supported attributes: **price** and **url**.
 
-The goal is to let the app or website decide how to render the information. It also decreases the data saved on-chain.
+### (1) Listing Attribute: Price (mandatory)
 
-#### Domain Parking
-
-The parking TXT entry indicates that the domain is for sale.
+The listing price attribute is mandatory to create a domain listing. It enables a domain owner to provide a listing price for the domain. The expected value is the unit as a string, followed by the amount as a number. If the number contains decimals, a dot must be used as a seperator.
 
 ```
-TXT parking=[String]
+TXT listing price=<unit number>
 ```
 
-#### Contact or Profile Information
+#### Valid Listing Price Examples
 
 ```
-TXT email=[Email]
-TXT phone=[Tel]
+TXT listing price=HNS 1000
+TXT listing price=USD 50
+TXT listing price=EUR 999.99
+TXT listing price=BTC 0.000224
 ```
 
-```
-TXT discord=[String]
-TXT facebook=[String]
-TXT github=[String]
-TXT instagram=[String]
-TXT linkedin=[String]
-TXT telegram=[String]
-TXT tiktok=[String]
-TXT twitter=[String]
-TXT weixin=[String]
-TXT whatsapp=[Tel]
-TXT youtube=[String]
-```
-
-#### Avatar
+The value can also be 0 or null:
 
 ```
-TXT avatar=[ URL | skylink | ipfsLink ]
+TXT listing price=0
+TXT listing price=
 ```
 
-#### Domain Caption
+Which means the domain is for sale and offers are accepted.
 
-A caption is especially useful for identities or as a sales pitch. It can also be used to add more context to a domain (e.g. NFT's).
+### (2) Listing Attribute: URL (optional)
 
-```
-TXT caption=[String]
-```
-
-#### Payment / Wallet Alias
-
-Although [HIP-0002](https://github.com/handshake-org/HIPs/blob/master/HIP-0002.md) is a much better approach, TXT entries could also be used to provide static wallet information.
+The listing url attribute is optional. It enables a domain owner to provide a url, where visitors can find more information about the domain. It can also be used to point visitors to a parking website or a private marketplace. The expected value is a fully qualified URL that must start with http:// or https://.
 
 ```
-TXT wallet=[Chain]:[Address]
+TXT listing url=<URL>
 ```
 
-## Valid TXT Standard Examples
-
-#### Parking Examples
+#### Valid Listing Url Examples
 
 ```
-TXT parking
-TXT parking=10000 HNS
-TXT parking=USD 1000
-TXT parking=USD 999.99
-TXT parking=999,99 EUR
-TXT parking=$199 (Old price $329)
-TXT parking=Please send an offer via email
-```
-
-Every string is valid, but usually a price is provided. Data providers should be aware that prices could be devided by a dot or a comma and can have decimal points.
-
-No matter what data is provided, as long as the parking TXT entry is added, the domain will be seen as "For Sale". It's up to the site owner or app to make sense of the data. Remember: It's impossible to validate the data via HSD.
-
-#### Contact Information Examples
-
-```
-TXT email=hello@handshake.org
-TXT phone=+1(310)3015800
-```
-
-The phone number should be prefixed with a plus sign and country code. Hyphens, dots and empty spaces are allowed.
-
-```
-TXT discord=handshake#1234
-TXT facebook=handshake
-TXT github=handshake
-TXT instagram=handshake
-TXT linkedin=handshake
-TXT telegram=handshake
-TXT tiktok=handshake
-TXT twitter=handshake
-TXT weixin=DDvRyffEabcdefGh123e
-TXT whatsapp=907123987234
-TXT youtube=handshake
-```
-
-For most social media profiles it's enough to provide the handle. WeChat (weixin) needs a chat ID. WhatsApp links will only work without a prefix, therefore it's best to omit them. We can always add or remove networks if needed.
-
-#### Avatar Examples
-
-```
-TXT avatar=https://handshake.org/images/landing/logo-dark.svg
-TXT avatar=sia:CABAB_1Dt0FJsxqsu_J4TodNCbCGvtFf1Uys_3EgzOlTcg
-TXT avatar=ipfs:bafybeidd2gyhagleh47qeg77xqndy2qy3yzn4vkxmk775bg2t5lpuy7pcu
-```
-
-#### Domain Caption Example
-
-```
-TXT caption=The Wheel of Fortune represents the end of one cycle and the beginning of the next
-```
-
-#### Payment / Wallet Alias Examples
-
-```
-TXT wallet=hns:hs1qnkr3cwf9ldp7qpq2csuuyxf0znj0lwhmawhlal
-TXT wallet=btc:12dRagNcdxK39288NjcDV4GX7rMsKCGn6B
-TXT wallet=eth:0x28346f1ec065eea239152213373bb58b1c9fc93b
+TXT listing url=https://www.learnmore.com/about/my/domain
+TXT listing url=https://learnmoreaboutmydomain/
 ```
 
 ## Security Concerns
 
-There is a slight chance of Cross Site Scripting (XSS). Therefore a site owner should always verify the provided data before adding it to the DOM.
+There is a slight chance of Cross Site Scripting (XSS). Therefore a site owner should always verify the provided URL data before adding it to the DOM.
 
-#### Example
+### Example
 
 `<a href="javascript:alert('Hello World!');">Execute JavaScript</a>`
 
 ## References
 
-[Linking Phone numbers in HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#linking_to_telephone_numbers)
-
-[Bob Wallet Parking on GitHub](https://github.com/kyokan/bob-wallet/issues/183)
-
-[Profile Information on Niami](https://niami/domain/0xstefan)
+[RFC 1464 Standards](<[https://niami/domain/0xstefan](https://datatracker.ietf.org/doc/html/rfc1464)>)
