@@ -27,9 +27,9 @@ The general syntax for profile data is:
 
 **TXT** `profile <attribute name>=<attribute value>`
 
-There are currently five supported attributes: **email**, **phone**, **avatar**, **social** and **wallet**. All attributes are optional but at least one attribute needs to be present, for a Domain to count as a profile.
+There are currently five supported attributes: **[email](#email)**, **[phone](#phone)**, **[avatar](#avatar)**, **[social](#social)** and **[wallet](#wallet)**. All attributes are optional but at least one attribute needs to be present, for a Domain to count as a profile.
 
-### (1) Profile Attribute: Email
+### <a id="email"></a> (1) Profile Attribute: Email
 
 The email attribute is optional. It enables a domain owner to provide an email for the domain. The expected value is an email address.
 
@@ -44,7 +44,7 @@ TXT profile email=hello@niami.io
 TXT profile email=hello@niami
 ```
 
-### (2) Profile Attribute: Phone
+### <a id="phone"></a> (2) Profile Attribute: Phone
 
 The phone attribute is optional. It enables a domain owner to provide a phone number for the domain. The expected value is a phone number.
 
@@ -63,7 +63,7 @@ TXT profile phone=+1536-888-6253
 TXT profile phone=1536-888-6253
 ```
 
-### (3) Profile Attribute: Avatar
+### <a id="avatar"></a> (3) Profile Attribute: Avatar
 
 The avatar attribute is optional. It enables a domain owner to provide an avatar for the domain. The expected value is a fully qualified URL that must start with http:// or https:// that points to an image file.
 
@@ -80,7 +80,7 @@ TXT profile avatar=https://mywebsite.com/avatar.png
 TXT profile avatar=https://siasky.net/MABn4I5M6yPT0aCjIMU2OjlTWmKysaqoCeP0gSJw5moVrg
 ```
 
-### (4) Profile Attribute: Social
+### <a id="social"></a> (4) Profile Attribute: Social
 
 The social attribute is optional. It enables a domain owner to provide social media usernames for the domain. The expected value is the name of the social platform followed by a username.
 
@@ -101,7 +101,7 @@ TXT profile social=discord 0xstefan#4697
 TXT profile social=hnschat 0xstefan
 ```
 
-### (5) Profile Attribute: Wallet
+### <a id="wallet"></a> (5) Profile Attribute: Wallet
 
 The wallet attribute is optional. It enables a domain owner to provide one or more wallet addresses for the domain. The expected value is the token followed by a wallet address.
 
