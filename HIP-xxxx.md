@@ -78,4 +78,4 @@ There is a slight chance of Cross Site Scripting (XSS). Therefore a site owner s
 
 ## References
 
-[RFC 1464 Standards](<[https://niami/domain/0xstefan](https://datatracker.ietf.org/doc/html/rfc1464)>)
+[RFC 1464 Standards](https://datatracker.ietf.org/doc/html/rfc1464)
