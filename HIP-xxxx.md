@@ -25,9 +25,9 @@ The general syntax for domain listings is:
 
 **TXT** `listing <attribute name>=<attribute value>`
 
-There are currently two supported attributes: **price** and **url**.
+There are currently two supported attributes: **[price](#price)** and **[url](#url)**.
 
-### (1) Listing Attribute: Price (mandatory)
+### <a id="price"></a> (1) Listing Attribute: Price (mandatory)
 
 The listing price attribute is mandatory to create a domain listing. It enables a domain owner to provide a listing price for the domain. The expected value is the unit as a string, followed by the amount as a number. If the number contains decimals, a dot must be used as a seperator.
 
@@ -53,7 +53,7 @@ TXT listing price=
 
 Which means the domain is for sale and offers are accepted.
 
-### (2) Listing Attribute: URL (optional)
+### <a id="url"></a> (2) Listing Attribute: URL (optional)
 
 The listing url attribute is optional. It enables a domain owner to provide a url, where visitors can find more information about the domain. It can also be used to point visitors to a parking website or a private marketplace. The expected value is a fully qualified URL that must start with http:// or https://.
 
