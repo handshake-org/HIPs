@@ -129,6 +129,6 @@ There is a slight chance of Cross Site Scripting (XSS) when using URL's in attri
 
 ## References
 
-[RFC 1464 Standards](<[https://niami/domain/0xstefan](https://datatracker.ietf.org/doc/html/rfc1464)>)
+[RFC 1464 Standards](https://datatracker.ietf.org/doc/html/rfc1464)
 
 [Common image file types by mozilla](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types)
