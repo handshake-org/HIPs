@@ -15,7 +15,7 @@ A proposal to create a standard for the labels of string attributes in TXT recor
 
 ## Motivation
 
-If a domain is not listet on an open marketplace like Namebase or Shakedex, it's hard to know if a domain is for sale by the owner or not. Furthermore a domain seller has no reliable way to provide that information.
+If a domain is not listed on an open marketplace like Namebase or Shakedex, it's hard to know if a domain is for sale by the owner or not. Furthermore a domain seller has no reliable way to provide that information.
 
 ## TXT Record Standard: Domain Listing
 
