@@ -15,7 +15,7 @@ A proposal to create a standard for the labels of string attributes in TXT recor
 
 ## Motivation
 
-Handshake domains can also be used as usernames. Domains are used to sign in to websites and to identify users in the Handshake ecosystem. Therefore it's useful to be able to attach profile information like an email, phone, avatar, social profiles or wallet information to a Domain.
+Handshake domains can also be used as usernames. Domains are used to sign in to websites and to identify users in the Handshake ecosystem. Therefore it's useful to be able to attach profile information like an email, phone, avatar or social profiles information to a Domain.
 
 This Standard can also be used to provide contact information for domain listings according to [HIP-XXXX](https://github.com/handshake-org/HIPs/pull/46/files/18bed187abbbcf2846f4fea78df1f7f8f1348608?short_path=1d2937e#diff-1d2937eacaeeb0fe53fcad8e70f406714fb6359c5fef0f47b1aef97e1cdfcbed).
 
@@ -27,7 +27,7 @@ The general syntax for profile data is:
 
 **TXT** `profile <attribute name>=<attribute value>`
 
-There are currently five supported attributes: **[email](#email)**, **[phone](#phone)**, **[avatar](#avatar)**, **[social](#social)** and **[wallet](#wallet)**. All attributes are optional but at least one attribute needs to be present, for a Domain to count as a profile.
+There are currently five supported attributes: **[email](#email)**, **[phone](#phone)**, **[avatar](#avatar)** and **[social](#social)**. All attributes are optional but at least one attribute needs to be present, for a Domain to count as a profile.
 
 ### <a id="email"></a> (1) Profile Attribute: Email
 
