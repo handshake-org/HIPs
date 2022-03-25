@@ -101,24 +101,6 @@ TXT profile social=discord 0xstefan#4697
 TXT profile social=hnschat 0xstefan
 ```
 
-### <a id="wallet"></a> (5) Profile Attribute: Wallet
-
-The wallet attribute is optional. It enables a domain owner to provide one or more wallet addresses for the domain. The expected value is the token followed by a wallet address.
-
-```
-TXT profile wallet=<token wallet-address>
-```
-
-#### Valid Wallet Examples
-
-```
-TXT profile wallet=HNS hs1qnkr3cwf9ldp7qpq2csuuyxf0znj0lwhmawhlal
-TXT profile wallet=BTC 12dRagNcdxK39288NjcDV4GX7rMsKCGn6B
-TXT profile wallet=ETH 0x28346f1ec065eea239152213373bb58b1c9fc93b
-```
-
-If more than one wallet with the same token is provided, site owners or apps can use a random one to provide their services.
-
 ## Security Concerns
 
 There is a slight chance of Cross Site Scripting (XSS) when using URL's in attributes. Therefore a site owner should always verify the provided URL data before adding it to the DOM.
