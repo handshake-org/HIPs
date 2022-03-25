@@ -109,6 +109,15 @@ const hash = Blake2b(bidAddress.hash || publicKey);
 const key = hash.slice(0, 8);
 ```
 
+# Meta "Purpose" Definitions
+
+In this chart, the root of all paths is labeled `meta'` and refers to the xpub
+derived from wallet account `0xffffffff`.
+
+| Path               | Purpose                                         | Notes                                          |
+|--------------------|-------------------------------------------------|------------------------------------------------|
+|`meta'/0x00000008`  | HIP8 bid value encryption for on-chain metadata | Derive `meta'/0x00000008/<account>` with bidding wallet account index before computing the HIP-8 XOR key.
+
 # Implementation
 
 https://github.com/pinheadmz/hsd/commit/6f3122108bc7a9561dced9e26cf15702f7e48f6f
