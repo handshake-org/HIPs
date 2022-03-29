@@ -67,7 +67,7 @@ File creation for many addresses at once needs to be a wallet function. There co
 
 ## Selective Address Provider
 
-# Basic Functions
+### Basic Functions
 
 A `selective` address provider service needs to offer following basic functions:
 - Storing (adding) uploaded data set (via GUI and/or API), already existing still unused addresses remain active
@@ -78,7 +78,7 @@ A `selective` address provider service needs to offer following basic functions:
 
 For service safety and additional features an authentication method seems necessary. This can be done via signing a string issued by the service provider with the specific Handshake name.
 
-# Optional Features
+### Optional Features
 If the name owner provides a contact like email, the service can inform
 - about the transaction
 - that service runs low of unused addresses
