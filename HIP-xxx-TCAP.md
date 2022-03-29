@@ -36,20 +36,21 @@ Name owner sets a record to associate name to a URL which provides the address (
 
 `%s` is replaced by the asset symbol (`HNS` for Handshake)
 
-## Address "File"
+## Address Data Set
 
+A address data set consists either of one line for the `static` solution or of many lines for `selective` solution. All lines use the same syntax.
 ```0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf <Signature>```
 
-`0xstefan` Name the address belongs to (but doesn't need to be from the same wallet as the name)
+What does it mean?
 
-`Signature` of `0xstefan 1 0 hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf` signed by `0xstefan`
+`0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf` Name and associated address
 
-The address file consists either of one line for the `static` solution or of many lines for `selective` solution. All lines in the same format.
+`0xstefan` signing `0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf` created `<Signature>` as result.
 
 ## Basic Wallet Features needed
 
 The wallet is responsible to
-- query the URL set on chain
+- query the URL set on chain as TXT record
 - take the first line (in case there are more)
 - verify the signature
 
@@ -57,12 +58,12 @@ An app just needs to tell the wallet (like Bob Extension) that x (`10.5`) of ass
 
 The possible answers the app gets from the wallet are `nok - no address found` or `ok - transaction successful` - in a format still to define. App could let wallet check if address for name exists by telling the wallet to send amount `0`.
 
-A `selective` address provider service (tbd) can send two additional parameters to the wallet added after the signature. This can be
+A `selective` address provider service can send two additional parameters to the wallet added to the address data set (after the signature). This can be
 
 - `Unix Timestamp` the time till the provided address is reserved for usage
-- `URL` the wallet can call when a transaction was made, so that the address provider can **mark the address as used**
+- `URL` the wallet can call when a transaction was made, so that the address provider can mark the address as used
 
-File creation for many addresses at once needs to be a wallet function. There could even be an upload feature to the TCAP service.
+File creation for many addresses at once needs to be a wallet function. There could even be an upload feature to the TCAP service. It's to consider that the batch of new addresses doesn't need to come from same the wallet as the name. In some cases it's probably preferrable to create a new wallet for this use case.
 ## Selective TCAP
 
 # Basic Functions
