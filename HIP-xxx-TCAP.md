@@ -64,7 +64,8 @@ A `selective` address provider service can send two additional parameters to the
 - `URL` the wallet can call when a transaction was made, so that the address provider can mark the address as used
 
 File creation for many addresses at once needs to be a wallet function. There could even be an upload feature to the TCAP service. It's to consider that the batch of new addresses doesn't need to come from same the wallet as the name. In some cases it's probably preferrable to create a new wallet for this use case.
-## Selective TCAP
+
+## Selective Address Provider
 
 # Basic Functions
 
@@ -76,6 +77,7 @@ A `selective` address provider service needs to offer following basic functions:
 - API to receive the "address used" info
 
 For service safety and additional features an authentication method seems necessary. This can be done via signing a string issued by the service provider with the specific Handshake name.
+
 # Optional Features
 If the name owner provides a contact like email, the service can inform
 - about the transaction
