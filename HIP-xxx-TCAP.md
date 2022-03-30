@@ -36,6 +36,8 @@ Name owner sets a record to associate name to a URL which provides the address (
 
 `%s` is replaced by the asset symbol (`HNS` for Handshake)
 
+In case a nameserver (NS) is configured for the name, this on-chain TXT record won't be available via DNS. If the name owner controls the nameserver it's preferred to set this TXT record in the nameserver.
+
 ## Address Data Set
 
 A address data set consists either of one line for the `static` solution or of many lines for `selective` solution. All lines use the same syntax.
