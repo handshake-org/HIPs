@@ -77,7 +77,7 @@ A `selective` address provider service needs to offer following basic functions:
 - Sending `Timestamp` and `URL` (with the data line) to the wallet which can call it to report the address was used
 - API endpoint to receive the "address was used" info
 
-For service safety and additional features an authentication method seems necessary. This can be done via signing a string issued by the service provider with the specific Handshake name.
+For service safety and additional features an authentication method seems necessary. This can be done via signing a string issued by the service provider with the specific Handshake name. To prevent service abuse and mitigate attacks the amount of API calls should be limited per source IP and time unit.
 
 ### Optional Features
 If the name owner provides a contact like email, the service can inform
