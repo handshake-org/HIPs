@@ -30,23 +30,29 @@ This HIP can work as a fallback for HIP-2.
 
 ## TXT Record on Chain
 
-Name owner sets a record to associate name to a URL which provides the address (example for name `0xstefan`):
+Name owner sets a record to associate name to a URL which provides the address:
+
+```TXT "HIPxxxx <URL>"```
+
+In case a nameserver (NS) is configured for the name, this on-chain TXT record won't be available via DNS. If the name owner controls the nameserver it's preferred to set this TXT record in the nameserver.
+
+Example:
 
 ```TXT "HIPxxxx https://tcap.sendme/hipxxxx/0xstefan/%s"```
 
-`%s` is replaced by the asset symbol (`HNS` for Handshake)
-
-In case a nameserver (NS) is configured for the name, this on-chain TXT record won't be available via DNS. If the name owner controls the nameserver it's preferred to set this TXT record in the nameserver.
+The wallet will replace `%s` by the asset symbol (`HNS` for Handshake)
 
 ## Address Data Set
 
 An address data set consists either of one line for the `static` solution or of many lines (data set batch) for `selective` solution. All lines use the same syntax.
 
-```0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf <Signature>```
+```<Name> <Address> <Signature>```
 
-What does it mean?
+Example:
 
-`0xstefan` signing `0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf` created `<Signature>` as result.
+```0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf WNIuvS...xPXA==```
+
+`0xstefan` signing `0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf` created `WNIuvS...xPXA==` as result.
 
 ## Basic Wallet Features needed
 
