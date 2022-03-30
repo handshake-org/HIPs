@@ -40,7 +40,7 @@ In case a nameserver (NS) is configured for the name, this on-chain TXT record w
 
 ## Address Data Set
 
-A address data set consists either of one line for the `static` solution or of many lines for `selective` solution. All lines use the same syntax.
+An address data set consists either of one line for the `static` solution or of many lines (data set batch) for `selective` solution. All lines use the same syntax.
 
 ```0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf <Signature>```
 
