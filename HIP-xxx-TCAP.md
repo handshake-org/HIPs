@@ -64,7 +64,7 @@ A `selective` address provider service can send additional parameters to the wal
 - `Unix Timestamp` the time till the provided address is reserved for usage
 - `URL` the wallet can call when a transaction was made, so that the address provider can mark the address as used
 
-The creation of a data set batch (many addresses) at once needs to be a wallet function. There could even be a feature to upload this batch to the TCAP service. Just to remind, such a batch of new addresses doesn't need to come from the same wallet as the name. In some cases it's probably preferrable to create/use a different wallet for this use case.
+Creating a data set batch (many addresses at once) needs to be a wallet function. There could even be a feature to upload this batch to the TCAP service. Just to remind, such a batch of new addresses doesn't need to come from the same wallet as the name. In some cases it's probably preferrable to create/use a different wallet for such use case.
 
 ## Selective Address Provider
 
