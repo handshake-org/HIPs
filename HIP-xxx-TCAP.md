@@ -14,11 +14,13 @@ Created: 2022-03-30
 
 This HIP describes a trustless and verifiable way to get a crypto address associated to a specific Handshake name (TLD).
 
-With HIP-xxxx addresses are stored with an additional signature verifiable by wallet that it's signed by the name included.
+Like [HIP-2](https://github.com/handshake-org/HIPs/blob/master/HIP-0002.md) an address is provided as a single line, but with an additional signature verifiable by the [signmessagewithname](https://hsd-dev.org/api-docs/#signmessagewithname) Handshake function.
 
 An address is fetched via HTTPS, either
 - `static`    from any source, in this case the address is the same with every request or
 - `selective` from a dedicated service which provides a single selective address with every request
+
+
 
 ## Motivation
 
