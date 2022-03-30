@@ -6,7 +6,7 @@ Title:   HIP-xxxx : Trustless Crypto Address Provider (TCAP)
 Type:    Informational
 Status:  Draft
 Authors: befranz <befranz@gmx.net>
-         0xstefan <support@niami.io>
+         0xstefan <0xstefan@niami.io>
 Created: 2022-03-30
 ```
 
