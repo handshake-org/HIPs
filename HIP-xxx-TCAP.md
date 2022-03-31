@@ -54,7 +54,7 @@ Example (is signed by `0xstefan`):
 
 ```hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf WNIuvS...xPXA==```
 
-`0xstefan` signing `0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf` created `WNIuvS...xPXA==` as result.
+`0xstefan` signing `hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf` created `WNIuvS...xPXA==` as result.
 
 ## Basic Wallet Features needed
 
