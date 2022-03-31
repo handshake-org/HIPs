@@ -43,7 +43,10 @@ TXT "HIPxxxxURL=https://vsap.sendme/hipxxxx/stefan.niami.io/"
 TXT "HIPxxxxKEY=7583ee39e6c66f346dec4dd4b12fac628c2cb74ee7458f895f30e1aeff96c34f"
 ```
 
-The asset symbol (SLIP-0044 for crypto, ISO 4217 for fiat) is added to the `<HIPxxxxURL>`.
+For crypto assets the symbol based on SLIP-0044 is added to the `<HIPxxxxURL>`.
+
+For fiat payments in USD, EUR etc. (ISO 4217) an additional info about the payment system is needed. Supported systems can be IBAN, paypal, paytm etc.  
+In this case `<Asset Symbol>.<Payment System>` is added to the `<HIPxxxxURL>`.
 
 ## Address Data Set
 
