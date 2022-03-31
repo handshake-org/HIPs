@@ -36,7 +36,7 @@ The second TXT record contains the public key to verify the signed data delivere
 
 Example:
 
-TXT records for the domain `stefan.niami`, public key of Handshake name `0xstefan` which will be used to sign the address(es).
+TXT records for the domain `stefan.niami`, `<Public Key>` of Handshake name `0xstefan` which will be used to sign the address(es).
 
 ```
 TXT "HIPxxxxURL=https://vsap.sendme/hipxxxx/stefan.niami.io/"
