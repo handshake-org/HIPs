@@ -7,7 +7,7 @@ Type:    Informational
 Status:  Draft
 Authors: befranz <befranz@gmx.net>
          0xstefan <support@niami.io>
-Created: 2022-03-30
+Created: 2022-03-31
 ```
 
 ## Abstract
@@ -32,25 +32,25 @@ This HIP can work as a fallback for HIP-2.
 
 Name owner sets a record to associate name to a URL which provides the address:
 
-```TXT "HIPxxxx <URL>"```
+```TXT "HIPxxxx=<URL>"```
 
 In case a nameserver (NS) is configured for the name, this on-chain TXT record won't be available via DNS. If the name owner controls the nameserver it's preferred to set this TXT record in the nameserver.
 
 Example:
 
-```TXT "HIPxxxx https://vsap.sendme/hipxxxx/0xstefan/%s"```
+```TXT "HIPxxxx=https://vsap.sendme/hipxxxx/0xstefan/"```
 
-The wallet will replace `%s` by the asset symbol (`HNS` for Handshake)
+The wallet will add the asset symbol (`HNS` for Handshake) to the URL.
 
 ## Address Data Set
 
 An address data set consists either of one line for the `static` solution (VAP) or of many lines (data set batch) for `selective` solution (VSAP). All lines use the same syntax.
 
-```<Name> <Address> <Signature>```
+```<Address> <Signature>```
 
-Example:
+Example (is signed by `0xstefan`):
 
-```0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf WNIuvS...xPXA==```
+```hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf WNIuvS...xPXA==```
 
 `0xstefan` signing `0xstefan hs1qlat47aa9m2k7pg2k0yylmqgy9h0me0jyf9rgwf` created `WNIuvS...xPXA==` as result.
 
@@ -89,3 +89,7 @@ For service safety and additional features an authentication method seems necess
 If the name owner provides a contact like email, the service can inform
 - about the transaction
 - that service runs low of unused addresses
+
+## References
+
+[SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) can be used as a symbol reference.
