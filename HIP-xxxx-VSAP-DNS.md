@@ -30,7 +30,7 @@ The owner of a domain (ICANN or Handshake) sets two TXT records. The first recor
 
 ```TXT "HIPxxxxURL=<URL>"```
 
-The second TXT record contains the public key to verify the signed data delivered from the <URL> in the first TXT record.
+The second TXT record contains the public key to verify the signed data delivered from the `<URL>` in the first TXT record.
 
 ```TXT "HIPxxxxKey=<Public Key>"```
 
