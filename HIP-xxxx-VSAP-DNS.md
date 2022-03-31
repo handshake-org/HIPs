@@ -97,5 +97,5 @@ If the name owner provides a contact like email, the service can inform
 
 ## References
 
-[SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) can be used as a symbol reference.
-[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
+[SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) and [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) are used as symbol reference.
+
