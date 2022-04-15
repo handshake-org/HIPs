@@ -12,7 +12,7 @@ Created: 2022-03-31
 
 ## Abstract
 
-This HIP describes a verifiable way to get an address for an asset like HNS, BTC or USD which the owner of a Handshake domain has signed to use for payments as alias. Following wording and examples refer to crypto address but basically this protocol can be used to provide any key/value pair in a verifiable fashion.
+This HIP describes a verifiable way how a Handshake name can be used as alias for a crypto receiving address. Following wording and examples refer to this use case but basically this protocol can be used to provide any key/value pair in a verifiable fashion.
 
 Like [HIP-2](https://github.com/handshake-org/HIPs/blob/master/HIP-0002.md) an address is provided as single line, but with an additional signature created by the [signmessagewithname](https://hsd-dev.org/api-docs/#signmessagewithname) Handshake function.
 
