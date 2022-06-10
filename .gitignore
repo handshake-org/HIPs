@@ -2,3 +2,4 @@ node_modules
 docs/content/*
 !docs/content/proposals/_index.md
 docs/public
+.DS_Store
