@@ -55,4 +55,4 @@ In the discussions about this topic there's some consent to greatly reduce the l
 
 ## References
 
-[Reserved Names Ranking and Claimable HNS](https://github.com/befranz/HIPs/reserved-names-ranking.csv)
+[Reserved Names Ranking and Claimable HNS](https://github.com/befranz/HIPs/blob/master/reserved-names-ranking.csv)
