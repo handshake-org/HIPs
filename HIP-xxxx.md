@@ -1,0 +1,237 @@
+# HIP-XXXX : HIP Template
+
+```
+Number:   HIP-XXXX
+Title:    Extend reserve name claim period with hard fork
+Nickname: "Thumb Wrestle"
+Type:     Standards
+Status:   Draft
+Authors:  Matthew Zipkin (@pinheadmz)
+Created:  2022-06-20
+```
+
+## Tweet-sized abstract
+
+- Important reserved names (about 1,000) stay reserved for 4 additional years, a total of 8.
+- The rest of the reserved names (about 89,000) become available for auctions after
+4 years (no change)
+
+See the section "Example opinions" for better understanding.
+
+## Abstract
+
+Handshake was launched with a set of reserved names that can be claimed by their
+current legacy DNS owners using DNSSEC proofs. The `claimPeriod` was originally
+set to exactly four years (`4 * 365 * 144 = 210,240` blocks) after which any of
+the reserved names could be OPEN for an auction and acquired by the usual
+bidding process. After a year and a half of HNS mainnet, the community has
+decided that this timespan is not sufficient to onboard many of the legacy name
+holders. In addition, allowing some names (like `.com`) to go up for auction
+after only four years of mainnet may lead to reckless name collisions that will
+not help the project move forward.
+
+Extending the reserve name claim period requires a hard fork of the Handshake
+blockchain. We propose a responsible mechanism for deploying such a hard fork,
+which will extend the `claimPeriod` to EIGHT YEARS for a subset of
+the reserved names. We call this hard fork "Thumb Wrestle".
+
+The scripts used to create the reserved names list is [hs-names](https://github.com/handshake-org/hs-names).
+
+## Community Support
+
+Hard forks by definition require the entire ecosystem to upgrade their software
+to stay in consensus. That means all miners, exchanges, wallets and services
+must agree to the protocol change. The `claimPeriod` discussion has been in
+progress since before mainnet launched. In addition to countless chats on
+Telegram, IRC and Discord, several more formal discussions and documents have
+been published:
+
+[How long should gTLDs be reserved? #294](https://github.com/handshake-org/hsd/issues/294)
+
+[name claims: allowing soft-fork to increase name reservation period. #301](https://github.com/handshake-org/hsd/issues/301)
+
+[Extend name claim period #645](https://github.com/handshake-org/hsd/issues/645)
+
+[HIP-XXXX by Falci](https://gist.github.com/Falci/04ee458066f6e1f3d7af36501b188e1d)
+
+[HIP-XXXX by Befranz](https://github.com/befranz/HIPs/blob/master/HIP-xxxx-Extended-Claim-Period.md)
+
+## Protocol Changes
+
+### Reserved Name Claims
+
+The Handshake reserved names are associated with a set of classification flags
+which we can use to apply different sets of rules.
+
+#### Old (current) rules
+
+| flag   | human time | last CLAIM block | first OPEN block  |                                    |
+|--------|------------|------------------|-------------------|------------------------------------|
+| root   | 4 years    | 210,240          | 210,241           | TLDs in ICANN root zone            |
+| top100 | 4 years    | 210,240          | 210,241           | Alexa top 100 + high ranking SLDs  |
+| custom | 4 years    | 210,240          | 210,241           | Special HNS allocations by founders|
+| (none) | 4 years    | 210,240          | 210,241           | All other Alexa top 100,000 names  |
+
+#### New (proposed) rules
+
+
+| flag   | human time | last CLAIM block | first OPEN block  | |
+|--------|------------|------------------|-------------------|-|
+| root   | 8 years    | 420,480          | 420,481           | _*_|
+| top100 | 8 years    | 420,480          | 420,481           | |
+| custom | 8 years    | 420,480          | 420,481           | |
+| (none) | 4 years    | 210,240          | 210,241           |(no change)|
+
+_* It has also been discussed to NEVER allow these names to go to auction.
+Since that protocol change can be deployed by a future soft fork, we defer
+from this document._
+
+### New constants
+
+We define new consensus values required for upgraded full nodes, and explained
+in the following sections:
+
+`FORK_ID_TREE_KEY`: (32 bytes) `0000000000000000000000000000000000000000000000000000000000000000`
+
+`THUMBWRESTLE_FORK_ID`: (4 bytes, "thum" in ascii) `7468756d`
+
+`NULL_FORK_ID`: (4 bytes) `00000000`
+
+`extendedClaimPeriod`: (int) `420480`
+
+`thumbwrestleActivationHeight`: (int) `210241`
+
+
+### Replay protection
+
+In the event of a contentious hard fork or minority hard fork with sufficient
+hash rate to compete with the main chain, we add replay protection to the
+protocol which prevents transactions from one chain being valid on the other.
+
+After activation, the transaction message used in all signature and verification
+operations will be prefixed by `THUMBWRESTLE_FORK_ID`. For example, a transaction
+input signed with SIGHASH_ALL will commit to these data in this order, hashed with blake2b
+and signed:
+
+| bytes | value                 |
+|-------|-----------------------|
+|  4    | `0x7468756d` (fork ID)|
+|  4    | version |
+|  32   | blake2b(serialized prevouts) |
+|  32   | blake2b(serialized sequences) |
+|  32   | blake2b(input prevout hash) |
+|  4    | blake2b(input prevout index) |
+|  *(var)*   | input redeem script |
+| 8     | input value |
+| 4     | input sequence |
+|  32   | blake2b(serialized outputs) |
+|  4    | locktime |
+|  4    | SIGHASH flag |
+
+Note that this new signature digest algorithm does NOT apply to two types of
+common transactions on the network:
+
+- Reserved name claims: Obviously, they can not be replayed on a chain fork
+where name claims are no longer allowed.
+
+- Airdrop proofs: These may be replayed on alternate chains but once the coins
+are generated they can only be spent with a transaction valid on the chain.
+
+### Light client fork detection
+
+It is common for blockchain hard forks to be designed such that SPV clients
+do not need to upgrade. By design they blindly follow the most-work chain
+without the ability to verify any other consensus rules. Handshake has a
+crucial role as a DNS root zone, and enables a special light client that only
+resolves names and has no wallet functions. For these reasons, we require all
+light name resolvers to upgrade as well. This protects the main chain from
+collisions with a contentious or minority fork.
+
+#### Fork ID tree insertion
+
+Luckily, the activation block `210241` is also the first block after a tree
+commitment:
+
+```
+claimPeriod = 210240
+thumbwrestleActivationHeight = claimPeriod + 1
+thumbwrestleActivationHeight % treeInterval = 1
+```
+
+This is extremely convenient for hard-forking light clients.
+
+**When block `210240` is confirmed, a new `treeRoot` will be computed by all full
+nodes. That value will be committed in the header of block `210241`. Hard forking
+full nodes MUST also insert the following key=>value pair into the Urkel Tree before
+computing this new `treeRoot`:**
+
+**`FORK_ID_TREE_KEY` => `THUMBWRESTLE_FORK_ID`**
+
+Full nodes MUST ALWAYS be able to serve Urkel proofs for this value at the
+`treeRoot` present in blocks `210241` to `210276`. Even if a user has executed
+a tree compaction and erased stale tree data, they MUST save this proof in the
+database and serve it when requested.
+
+When light clients reach height `210241` they can request a proof for `FORK_ID_TREE_KEY`
+from full node peers. If a valid proof is not returned with the `THUMBWRESTLE_FORK_ID`
+value, the light client MUST reject the block as invalid and ban the peer.
+
+
+## Future hard forks
+
+The use of a fork ID in transaction signatures can be reused for future hard forks.
+Fork IDs can also continue to be committed to the Urkel tree at `FORK_ID_TREE_KEY`.
+This key value is effectively a `nameHash` but it is effectively impossible for
+any valid Handshake name to hash to that exact value. This gives it a special
+metadata property, that can only be updated with a hard fork. The fork ID values
+never need to appear anywhere on chain in any transaction, block, or p2p message.
+
+## Activation
+
+The new hard fork rules will be enforced starting at block `210241`.
+
+The use of BIP9 has been discussed to ensure miner readiness and those details
+may be added to this HIP in the future. BIP9 should not be considered an activation
+mechanism like it usually is for soft forks, but can be added as an emergency abort
+mechanism if a majority of miners have not upgraded their software in time.
+
+
+## Suggested timeline
+
+| hsd version | status           | approximate date |
+|-------------|------------------|------------------|
+| v5.0.0      | Protocol changes, activation logic and BIP9 implemented | October 2022 |
+| v6.0.0      | Hard fork rules locked in, activation removed | April 2023 |
+| v7.0.0      | Thumb Wrestle epoch begins | October 2023
+
+
+## Example implementation
+
+This code was written for research purposes only while writing this proposal. It
+should not be opened as a pull request until community consensus has settled.
+
+https://github.com/pinheadmz/hsd/tree/thumbwrestle-1
+
+## Notes for developers
+
+The wallet SHOULD set `forkid` automatically assuming it is in sync and walletDB
+is aware of the correct blockchain height. Eventually the hard fork will be
+buried under enough proof-of-work that activation logic can be removed. Handshake
+is now a hard-forking blockchain which means if you are signing transactions
+in your own software, you will always need to set the current fork ID:
+
+```js
+mtx.forkid = consensus.THUMBWRESTLE_FORK_ID;
+mtx.sign(ring);
+```
+
+## Example opinions
+
+If you think that 4 years is not long enough for `.com` to claim on HNS, you should
+support this proposal.
+
+If you think `.com` should be open for auction on HNS in about a year for anyone
+to own and control, you should oppose this proposal.
+
+If you think `.com` should NEVER be opened for auction on HNS, you should support
+this proposal and also support a future soft fork as we approach the 8 year mark.
