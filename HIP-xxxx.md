@@ -1,4 +1,4 @@
-# HIP-XXXX : HIP Template
+# HIP-XXXX : "Thumb Wrestle" hard fork to extend HNS reserve name claim period
 
 ```
 Number:   HIP-XXXX
