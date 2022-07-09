@@ -1,0 +1,57 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width"><link rel=stylesheet href=https://hsd-dev.org/css/main.css><link rel=stylesheet href=https://hsd-dev.org/css/github-markdown.min.css><link rel=stylesheet href=/HIPs/css/style.css><title>The Meta Account Key - Handshake Improvement Proposals</title><link rel=icon type=image/x-icon href=https://handshake.org/img/favicon/hns-favicon.ico><title>Handshake Improvement Proposals</title><meta name=title content="The Meta Account Key"><meta name=description content="HIP-0011\nCategory: Standards\nStatus: Draft"><meta name=author content="Matthew Zipkin <pinheadmz@gmail.com>"><meta property="og:type" content="website"><meta property="og:url" content="https://hsd-dev.org/HIPs/proposals/0011/"><meta property="og:title" content="The Meta Account Key"><meta property="og:description" content="HIP-0011\nCategory: Standards\nStatus: Draft"><meta property="og:image" content="https://hsd-dev.org/img/logo.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://hsd-dev.org/HIPs/proposals/0011/"><meta property="twitter:title" content="The Meta Account Key"><meta property="twitter:description" content="HIP-0011\nCategory: Standards\nStatus: Draft"><meta property="twitter:image" content="https://hsd-dev.org/img/logo.svg"></head><body><header><a href=/><img alt="Handshake logo" src=https://hsd-dev.org/img/logo.svg></a></header><main><nav><div class=wrapper><ul><li><strong>HIPs</strong></li><li><a href=/>Home</a></li><li><a href=/proposals/>Proposals</a></li><li><a href=https://t.me/hns_tech>Tech Chat</a></li></ul><ul><li><strong class=upper>category</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/informational>Informational</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards>Standards</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards-track>Standards track</a></li></ul><ul><li><strong class=upper>status</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/draft>Draft</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/final>Final</a></li></ul></div></nav><article class=page><section class=markdown-body><h2>HIP-0011: The Meta Account Key</h2><h1 id=abstract>Abstract</h1><p>There are some wallet operations that do not require addresses for receiving HNS
+on chain. However, BIP32 recoverability is still desired for metadata that may
+be involved in these operations. For these operations, we define a constant
+account index of <code>0xffffffff</code> as &ldquo;The Meta Account&rdquo;. Derivation paths from this
+account key should be specified in this document to track future standard uses
+for The Meta Account Key.</p><h1 id=motivation>Motivation</h1><h2 id=hardware-wallets>Hardware Wallets</h2><p>Hardware wallets like Ledger Nano S and Nano X support multiple coin types.
+The Ledger wallet in particular has &ldquo;apps&rdquo; for each coin and the BIP32 paths
+are partially <a href=https://github.com/LedgerHQ/app-handshake/commit/19d63b7ddc530ab96010afa5280f621b2e16e045>locked</a>. This means that wallet software
+can only request data from the hardware in the <code>account</code>, <code>branch</code>, and <code>index</code>
+ranges.</p><h2 id=account-key-leakage>Account Key Leakage</h2><p>One example of recoverable wallet metadata usage is in the <code>generateNonce()</code>
+function used by <code>hsd</code> when creating <code>BID</code> outputs. In <code>hsd</code> versions up to and
+including <code>3.0.1</code> (as of this writing) the wallet incorporates a pseudo-random
+factor to the blind that is partially derived from the current spending
+account&rsquo;s xpub (Extended Public Key).</p><p>This means that if a user&rsquo;s <code>xpub</code> is leaked or given to a third party for any
+reason (e.g. an accountant tracking wallet activity or other watch-only wallet
+service) that party can &ldquo;guess&rdquo; the value of that user&rsquo;s blinded bids and will
+be able to verify if they guessed correctly by regenerating the nonce used in
+the BID. Since the lockup defines the upper limit of possible bid values, the
+brute-force space is actually quite limited and easily accessible.</p><p>For example, if an attacker knows a user&rsquo;s <code>xpub</code> and they see that user has
+placed a bid with a lockup of 10 HNS, they can use that <code>xpub</code> and the auction
+nameHash to generate nonces for all values 0 - 10,000,000 until one nonce
+matches the blind. The attacker then knows the secret bid value.</p><p>For this reason, The Meta Account Key is proposed as a REQUIRED feature of
+<a href=https://hsd-dev.org/HIPs/proposals/0008/>HIP-0008</a></p><h1 id=features>Features</h1><p>The meta-account key has the following properties:</p><ul><li><p>It can be restored from the wallet seed.</p></li><li><p>It can remain private forever, there is never any need to share it.</p></li><li><p>Users can share their <code>xpub</code> for accounting reasons but still keep their bid values secret.</p></li><li><p>Watch-only wallets like those that construct transactions for hardware-singing
+devices can request the <code>metaxpub</code> from the device and store it in a database. No
+private key or password will ever be needed.</p></li><li><p>Private keys from the <code>metaxpub</code> path are never used, so decrypting the master
+private key is only needed to derive it once. Wallets that manage private keys
+can choose not to store the <code>metaxpub</code> and derive it from the master private key
+on the fly when users enter their password.</p></li></ul><h1 id=specification>Specification</h1><ol><li><p>Private keys from this account should NEVER be used</p></li><li><p>Child branches of The Meta Account Key therefore must always be non-hardened</p></li></ol><p>Example:</p><pre tabindex=0><code>const meta = wallet.master.key.deriveAccount(
+  44,           // Purpose (BIP-44)
+  5353,         // Coin Type (BIP-44)
+  0xffffffff    // Meta Account
+);
+
+// Standardized purpose for HIP-8
+const HIP8_master = meta.derive(0x00000008);
+
+// Derive local spending wallet account for HIP-8
+const HIP8_account = HIP8_master.derive(account_index);
+
+// Continue using HIP-8, incorporating nameHash and auction height
+const publicKey = metaxpub.derive(0x00000000)
+                          .derive(0x11111111)
+                          .derive(0x22222222)
+                          .derive(0x33333333)
+                          .derive(0x44444444)
+                          .derive(0x55555555)
+                          .derive(0x66666666)
+                          .derive(0x77777777)
+                          .derive(0x00002710); // height
+
+const hash = Blake2b(bidAddress.hash || publicKey);
+
+// Used to XOR secret bid amount into nulldata output
+const key = hash.slice(0, 8);
+</code></pre><h1 id=meta-purpose-definitions>Meta &ldquo;Purpose&rdquo; Definitions</h1><p>In this chart, the root of all paths is labeled <code>meta'</code> and refers to the xpub
+derived from wallet account <code>0xffffffff</code>.</p><table><thead><tr><th>Path</th><th>Purpose</th><th>Notes</th></tr></thead><tbody><tr><td><code>meta'/0x00000008</code></td><td>HIP8 bid value encryption for on-chain metadata</td><td>Derive <code>meta'/0x00000008/&lt;account></code> with bidding wallet account index before computing the HIP-8 XOR key.</td></tr></tbody></table><h1 id=implementation>Implementation</h1><p><a href=https://github.com/pinheadmz/hsd/commit/6f3122108bc7a9561dced9e26cf15702f7e48f6f>https://github.com/pinheadmz/hsd/commit/6f3122108bc7a9561dced9e26cf15702f7e48f6f</a></p><hr><div class=info><strong>HIP:</strong><div>0011</div><strong>Status:</strong><div><a href=/status/draft>Draft</a></div><strong>Type:</strong><div><a href=/category/standards>Standards</a></div><strong>Created:</strong><div>Fri, 25 Mar 2022</div><strong>Last commit:</strong><div>Sat, 09 Jul 2022</div><strong>Author:</strong><div>Matthew Zipkin &lt;pinheadmz@gmail.com></div></div><hr><a href=https://github.com/handshake-org/HIPs/blob/master/HIP-0011.md>Edit on GitHub</a></div></section><aside><h2>Table of Contents</h2><nav id=TableOfContents><ul><li><a href=#hardware-wallets>Hardware Wallets</a></li><li><a href=#account-key-leakage>Account Key Leakage</a></li></ul></nav></aside></article></main><footer id=footer>©&nbsp;2021 Handshake Community<a rel=license href=http://creativecommons.org/licenses/by-sa/4.0/>(Creative
+Commons Attribution-ShareAlike 4.0 International License)</a></footer></body></html>
