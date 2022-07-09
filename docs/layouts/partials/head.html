@@ -9,7 +9,7 @@
 
     {{ $title := .Title }}
     {{ $img := "https://hsd-dev.org/img/logo.svg"}}
-    {{ $desc := cond (.IsPage) ( print "HIP-" .Params.hip "\\nCategory: " .Params.category "\\nStatus: " .Params.status)
+    {{ $desc := cond (.IsPage) ( print "HIP-" .Params.hip " - Category: " .Params.category " - Status: " .Params.status)
     (.Site.Params.Description)
     }}
     <!-- Primary Meta Tags -->
