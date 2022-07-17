@@ -99,6 +99,26 @@ be created or destroyed once the chain is first created. The name owner must
 commit to the Update Chain forever and can not revert to data version `0` with
 a future `UPDATE` covenant, which would break the Update Chain.
 
+## Light Clients
+
+The secure light client is an essential component of the Handshake ecosystem, and
+any protocol extension should consider maintaining that compatibility. Since
+the Urkel tree is updated periodically, the state of every Update Chain will be
+verifiable by light clients after each tree commitment interval.
+
+For some applications, the latest state may not be enough data to synchronize
+the Update Chain state. Luckily, BIP37 has been expanded in Handshake to
+include name hashes. This means that even an SPV node can get Merkle proofs of
+every UDPATE transaction for a name, and may then be able to compute the state
+of the system.
+
+Normally this process would require a Bloom Filter upload and full chain rescan.
+However, the data in an Update Chain can provide "hints". For example, part
+of the data in each `UPDATE` can include the block hash of the previous `UPDATE`.
+A light client can recursively request the full blocks indicated by these hints
+and reconstruct the Update Chain using only the relevant blocks. This scheme is
+similar to Neutrino wallets for Bitcoin which take advantage of BIP157 and BIP158.
+
 ## Access Modes
 
 In combination with a chain of special-purpose data blobs, an Update Chain
