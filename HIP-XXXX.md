@@ -233,14 +233,42 @@ dSLD algorithm: `ed25519`
 
 `namehash`: The blake2b160 digest of the DNS wire-formatted domain name.
 
-> Example: `campaign.chaos.`
+> Example:
+>
+> Domain name: `campaign.chaos.`
 >
 > DNS name serialization: `0863616d706169676e056368616f7300`
 >
 > Escher namehash: `3199fb4d363f59a8836769be02d201e3bfbc0366`
 
-`signature`: The signature over the message which is simply the NEW public key,
-prepended by the ASCII-encoded magic string `"EscherMessage"`.
+`signature`: The signature over the a message committing to the NEW public key,
+the current Escher root hash, and the magic string `"EscherMessage"` encoded
+in ASCII.
+
+> Example:
+>
+> Current public key: `f5e5c982f8084efec7964e68b6f61cf529f656fb6d2e343ff42cc8ea9520ed5c`
+> 
+> Magic string: `4573636865724d657373616765`
+>
+> Current tree root: `6c3bc60ab45fe53ec7c6e9948fa87e558d2cbf23`
+>
+> New public key: `0bf7920cbd5b4697704952ac5aa7d0d4de92d643368c544da4c5d2706204d4ed`
+> 
+> Complete signed message:
+> 
+> ```
+> 4573636865724d6573736167656c3bc60ab45fe53ec7c6e9948fa87e558d2cbf23
+> 0bf7920cbd5b4697704952ac5aa7d0d4de92d643368c544da4c5d2706204d4ed
+>```
+>
+> Signature:
+>
+> ```
+> bf1a62fd4f4c234b6e6cdf4d52b7397c1c2db2e9848bdab996003bfcc7cfd29a
+> c6f911e71c3b0ef329df20cf42d48312940fcc7ef3da5882e890737d1690b901
+>```
+
 
 ### Message format
 
@@ -291,16 +319,19 @@ transaction being considered MUST be rejected from mempool or block:
     root hash of the empty Escher tree.
     2. If the name is not in or entering Escher mode, no additional rules apply.
 
-2. Bytes 1-20 of `current` are read and referred to as `currentRoot`. This is
+2. If the name is in Escher mode it MUST remain in Escher mode, i.e.
+`proposed[0] === ESCHER_VERSION` is required. (There is no escaping Escher mode!)
+
+3. Bytes 1-20 of `current` are read and referred to as `currentRoot`. This is
 the root hash of the current Escher tree.
 
-3. After the version byte, `proposed` MUST have at least 42 bytes of data remaining:
+4. After the version byte, `proposed` MUST have at least 42 bytes of data remaining:
     1. `proposedRoot` (20 bytes)
     2. `opcode` (1 byte)
     3. `namehash` (20 bytes)
     4. parameters (at least 1 byte)
 
-4. If `opcode === 0x00` the operation is a `REGISTER` and parameter validation follows:
+5. If `opcode === 0x00` the operation is a `REGISTER` and parameter validation follows:
     1. read `newKey` (32 bytes)
     2. read `proof` (all remaining bytes)
     3. `proof` MUST be a valid Urkel non-existence proof for `namehash` in the tree
@@ -309,7 +340,7 @@ the root hash of the current Escher tree.
     `namehash:newKey` and a new root hash is computed.
     5. This new root hash MUST be exactly equal to `proposedRoot`.
 
-5. If `opcode === 0x01` the operation is an `UPDATE` and parameter validation follows:
+6. If `opcode === 0x01` the operation is an `UPDATE` and parameter validation follows:
     1. read `newKey` (32 bytes)
     2. read `signature` (64 bytes)
     3. read `proof` (all remaining bytes)
