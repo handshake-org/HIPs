@@ -205,7 +205,9 @@ complete tree!
 
 The specification currently uses 20 byte hashes in order to fit deeper Urkel
 proofs into the `UPDATE` data. 32 byte hashes would be preferable, but would
-result in significantly lower capacity for SLDs.
+result in significantly lower capacity for dSLDs (an Escher tree using 32 byte
+hashes will only have capacity for about 100 dSLDs in most proofs under 374
+bytes).
 
 We currently choose `ed25519` for dSLD ownership because of smaller key
 size (32 bytes) and compatibility with other blockchain systems like Sia.
