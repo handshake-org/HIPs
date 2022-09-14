@@ -1,0 +1,213 @@
+# HIP-XXXX : Update Chains
+
+```
+Number:  HIP-XXXX
+Title:   Update Chains
+Type:    Informational
+Status:  Draft
+Authors: Matthew Zipkin <@pinheadmz>
+Created: 2023-07-16
+```
+
+## Abstract
+
+This document introduces an abstract mechanism that can be used as an element
+of Layer 2 protocols, applications, and soft forks on the Handshake blockchain.
+We take advantage of the covenant system and in particular the `UPDATE` covenant,
+which enables a HNS name owner to commit up to 512 bytes of entirely arbitrary
+data at the maximum rate of once per block. Since names are always owned by a
+single transaction output, a series of `UPDATE` covenants for a name can used
+like a linear message channel or, in a sense, a miniature independent blockchain
+controlled by one Handshake name.
+
+## Background
+
+### Covenants
+
+Several of the HNS covenants require an output's address to be identical to
+the address in the output being spent. In the example below, `Addr 1` and `Addr 2`
+lose an auction, and `Addr 3` is the winner. After confirming the `REGISTER`
+covenant, that name owner can now start confirming a chain of `UPDATE` covenants,
+each spending the one and only previous output that owned the name.
+
+```                                                    
+       ┌────┐    ┌──────┐    ┌──────┐                                      
+Addr 1 │BID │───▶│REVEAL│───▶│REDEEM│                                      
+       └────┘    └──────┘    └──────┘                                      
+       ┌────┐    ┌──────┐    ┌──────┐                                      
+Addr 2 │BID │───▶│REVEAL│───▶│REDEEM│                                      
+       └────┘    └──────┘    └──────┘                                      
+       ┌────┐    ┌──────┐    ┌────────┐    ┌──────┐    ┌──────┐    ┌──────┐
+Addr 3 │BID │───▶│REVEAL│───▶│REGISTER│───▶│UPDATE│───▶│UPDATE│───▶│UPDATE│
+       └────┘    └──────┘    └────────┘    └──────┘    └──────┘    └──────┘
+```
+
+### Namestate Data
+
+The `UPDATE` covenant is allowed to commit to 512 bytes of data which will
+eventually get committed to the HNS Urkel Tree and proven to light clients. This
+data field currently **has absolutely no consensus rules applied to it**.
+
+In the application layer, the first byte of this data is referred to as a `version`
+and so far only version `0` has been defined: this is the HNS root zone record set.
+Any data is still allowed after a version `0` byte, but if it is not formatted
+correctly, the HNS root name server will simply ignore it.
+
+## New Namestate Data Versions
+
+Anyone can propose a new standard data format and collaborate with the community
+to agree on a version number for that standard (we recommend writing a HIP). Layer
+2 applications can process this data in a special way. Smart contracts, more
+complex scripting systems, compiled bytecode can all be used as Namestate Data.
+They may contain complex proofs like Bitcoin SPV merkle proofs to link
+HNS names with BTC transactions.
+
+> Example: TLD Token
+>
+> Version: `0xfe`
+>
+> Data: A series of tuples (`uint32`, `uint32`) indicating account numbers and
+> their balance of the token.
+>
+> Update Chain: Commits to latest state of all account balances
+
+## Extending Consensus Rules (soft forks)
+
+Handshake full nodes verify every input and every output of every transaction in
+every block. The UTXO script system is essentially copied from Bitcoin, but there
+are extra consensus rules applied just to covenants. These rules always require
+fully validating nodes to retrieve the current Namestate for a name before
+determining whether or not the queued transaction is valid.
+
+This means that without any additional disk or memory requirements, new consensus
+rules can be applied to Update Chains by burdening data in `UPDATE` covenants
+with new rules.
+
+> Example: TLD Token
+>
+> New protocol rules:
+>
+> 1. The total sum of all "balance" fields in the covenant being
+> evaluated MUST ALWAYS equal the sum of all "balance" fields in the existing
+> Namestate data.
+>
+> 2. If the existing Namestate data is version `0xfe` then the version of the
+> covenant data being evaluated MUST ALSO be `0xfe`
+
+These rules make our example token chain a bit more reasonable. Tokens can not
+be created or destroyed once the chain is first created. The name owner must
+commit to the Update Chain forever and can not revert to data version `0` with
+a future `UPDATE` covenant, which would break the Update Chain.
+
+## Light Clients
+
+The secure light client is an essential component of the Handshake ecosystem, and
+any protocol extension should consider maintaining that compatibility. Since
+the Urkel tree is updated periodically, the state of every Update Chain will be
+verifiable by light clients after each tree commitment interval.
+
+For some applications, the latest state may not be enough data to synchronize
+the Update Chain state. Luckily, BIP37 has been expanded in Handshake to
+include name hashes. This means that even an SPV node can get Merkle proofs of
+every UDPATE transaction for a name, and may then be able to compute the state
+of the system.
+
+Normally this process would require a Bloom Filter upload and full chain rescan.
+However, the data in an Update Chain can provide "hints". For example, part
+of the data in each `UPDATE` can include the block hash of the previous `UPDATE`.
+A light client can recursively request the full blocks indicated by these hints
+and reconstruct the Update Chain using only the relevant blocks. This scheme is
+similar to Neutrino wallets for Bitcoin which take advantage of BIP157 and BIP158.
+
+## Access Modes
+
+In combination with a chain of special-purpose data blobs, an Update Chain
+can employ special types of output scripts to expand the use cases.
+
+### Private
+
+The name owner uses a standard pubKeyHash address and retains unilateral control
+over the Update Chain. This may support applications proprietary to the name
+itself, or be used as a trusted oracle.
+
+### Public
+
+The name owner transfers the name to an address locked by the following redeem
+script "anyone can UPDATE or RENEW":
+
+```
+OP_TYPE
+0x07 // UPDATE
+OP_EQUAL
+OP_IF
+  OP_TRUE
+OP_ELSE
+  OP_TYPE
+  0x08 // RENEW
+  OP_EQUAL
+OP_ENDIF
+```
+
+An Update Chain locked by this redeem script becomes a sort of public channel.
+Anyone can `UPDATE` the data in the Namestate. Without a soft fork to enforce
+extra consensus rules on that data this mode may be quite chaotic, but it could
+be used a sort of communication channel that any HNS user can access.
+
+### Pay-to-Update
+
+The name owner transfers the name to an address locked by the following redeem
+script "Key A can ONLY UPDATE, key B can do anything else":
+
+```
+OP_TYPE
+0x07 // UPDATE
+OP_EQUAL
+OP_IF
+  <Key A>
+  OP_CHECKSIG
+OP_ELSE
+  <Key B>
+  OP_CHECKSIG
+OP_ENDIF
+
+```
+
+The name owner creates, partially signs with `Key A`, and publishes (off chain)
+the following transaction:
+
+```
+vin:
+  0: Key A signature with SIGHASH NO_INPUT | ANYONE_CAN_PAY | SINGLE_REVERSE
+vout:
+  0: (null)
+  1: payment to name owner
+```
+
+Note that `SIGHASH NO_INPUT` means this same partially-signed transaction can
+be used and re-used repeatedly as long as the name remains owned by the same
+address. A more advanced script can also disable `TRANSFER` to ensure that this
+is always the case for some applications.
+
+The name owner uses two keys in the redeem script so that they can pre-sign
+the spending of ANY output that owns the name but we must ensure that an attacker
+can't take advantage of this pre-sign to transfer the name to themselves!
+
+Any user who wishes to pay the name owner to `UPDATE` their chain completes the
+transaction as follows:
+
+```
+vin:
+  0: Key A signature with SIGHASH NO_INPUT | ANYONE_CAN_PAY | SINGLE_REVERSE
+  1: User's funds
+vout:
+  0: User's UPDATE covenant with 512 byte payload
+  1: User's change output
+  2: payment to name owner
+```
+
+With this mechanism, a name owner can set a price which must be paid by any and
+every user that wants to commit a message to the Update Chain.
+
+In a variation of this mode, the name owner does NOT use `SIGHASH NO_INPUT` and
+instead creates a pre-sign `UPDATE` only when requested by a user, with an
+agreed-upon price and owner-approved `UPDATE` data.
