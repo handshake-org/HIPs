@@ -1,0 +1,107 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width"><link rel=stylesheet href=https://hsd-dev.org/css/main.css><link rel=stylesheet href=https://hsd-dev.org/css/github-markdown.min.css><link rel=stylesheet href=/HIPs/css/style.css><title>Update Chains - Handshake Improvement Proposals</title><link rel=icon type=image/x-icon href=https://handshake.org/img/favicon/hns-favicon.ico><title>Handshake Improvement Proposals</title><meta name=title content="Update Chains"><meta name=description content="HIP-0015 - Category: Informational - Status: Draft"><meta name=author content="Matthew Zipkin <@pinheadmz>"><meta property="og:type" content="website"><meta property="og:url" content="https://hsd-dev.org/HIPs/proposals/0015/"><meta property="og:title" content="Update Chains"><meta property="og:description" content="HIP-0015 - Category: Informational - Status: Draft"><meta property="og:image" content="https://hsd-dev.org/img/logo.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://hsd-dev.org/HIPs/proposals/0015/"><meta property="twitter:title" content="Update Chains"><meta property="twitter:description" content="HIP-0015 - Category: Informational - Status: Draft"><meta property="twitter:image" content="https://hsd-dev.org/img/logo.svg"></head><body><header><a href=/><img alt="Handshake logo" src=https://hsd-dev.org/img/logo.svg></a></header><main><nav><div class=wrapper><ul><li><strong>HIPs</strong></li><li><a href=/>Home</a></li><li><a href=/HIPs/proposals/>Proposals</a></li><li><a href=https://t.me/hns_tech>Tech Chat</a></li></ul><ul><li><strong class=upper>category</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/informational>Informational</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards>Standards</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/category/standards-track>Standards track</a></li></ul><ul><li><strong class=upper>status</strong></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/draft>Draft</a></li><li class=capitalize><a href=https://hsd-dev.org/HIPs/status/final>Final</a></li></ul></div></nav><article class=page><section class=markdown-body><h2>HIP-0015: Update Chains</h2><h2 id=abstract>Abstract</h2><p>This document introduces an abstract mechanism that can be used as an element
+of Layer 2 protocols, applications, and soft forks on the Handshake blockchain.
+We take advantage of the covenant system and in particular the <code>UPDATE</code> covenant,
+which enables a HNS name owner to commit up to 512 bytes of entirely arbitrary
+data at the maximum rate of once per block. Since names are always owned by a
+single transaction output, a series of <code>UPDATE</code> covenants for a name can used
+like a linear message channel or, in a sense, a miniature independent blockchain
+controlled by one Handshake name.</p><h2 id=background>Background</h2><h3 id=covenants>Covenants</h3><p>Several of the HNS covenants require an output&rsquo;s address to be identical to
+the address in the output being spent. In the example below, <code>Addr 1</code> and <code>Addr 2</code>
+lose an auction, and <code>Addr 3</code> is the winner. After confirming the <code>REGISTER</code>
+covenant, that name owner can now start confirming a chain of <code>UPDATE</code> covenants,
+each spending the one and only previous output that owned the name.</p><pre tabindex=0><code>       ┌────┐    ┌──────┐    ┌──────┐                                      
+Addr 1 │BID │───▶│REVEAL│───▶│REDEEM│                                      
+       └────┘    └──────┘    └──────┘                                      
+       ┌────┐    ┌──────┐    ┌──────┐                                      
+Addr 2 │BID │───▶│REVEAL│───▶│REDEEM│                                      
+       └────┘    └──────┘    └──────┘                                      
+       ┌────┐    ┌──────┐    ┌────────┐    ┌──────┐    ┌──────┐    ┌──────┐
+Addr 3 │BID │───▶│REVEAL│───▶│REGISTER│───▶│UPDATE│───▶│UPDATE│───▶│UPDATE│
+       └────┘    └──────┘    └────────┘    └──────┘    └──────┘    └──────┘
+</code></pre><h3 id=namestate-data>Namestate Data</h3><p>The <code>UPDATE</code> covenant is allowed to commit to 512 bytes of data which will
+eventually get committed to the HNS Urkel Tree and proven to light clients. This
+data field currently <strong>has absolutely no consensus rules applied to it</strong>.</p><p>In the application layer, the first byte of this data is referred to as a <code>version</code>
+and so far only version <code>0</code> has been defined: this is the HNS root zone record set.
+Any data is still allowed after a version <code>0</code> byte, but if it is not formatted
+correctly, the HNS root name server will simply ignore it.</p><h2 id=new-namestate-data-versions>New Namestate Data Versions</h2><p>Anyone can propose a new standard data format and collaborate with the community
+to agree on a version number for that standard (we recommend writing a HIP). Layer
+2 applications can process this data in a special way. Smart contracts, more
+complex scripting systems, compiled bytecode can all be used as Namestate Data.
+They may contain complex proofs like Bitcoin SPV merkle proofs to link
+HNS names with BTC transactions.</p><blockquote><p>Example: TLD Token</p><p>Version: <code>0xfe</code></p><p>Data: A series of tuples (<code>uint32</code>, <code>uint32</code>) indicating account numbers and
+their balance of the token.</p><p>Update Chain: Commits to latest state of all account balances</p></blockquote><h2 id=extending-consensus-rules-soft-forks>Extending Consensus Rules (soft forks)</h2><p>Handshake full nodes verify every input and every output of every transaction in
+every block. The UTXO script system is essentially copied from Bitcoin, but there
+are extra consensus rules applied just to covenants. These rules always require
+fully validating nodes to retrieve the current Namestate for a name before
+determining whether or not the queued transaction is valid.</p><p>This means that without any additional disk or memory requirements, new consensus
+rules can be applied to Update Chains by burdening data in <code>UPDATE</code> covenants
+with new rules.</p><blockquote><p>Example: TLD Token</p><p>New protocol rules:</p><ol><li><p>The total sum of all &ldquo;balance&rdquo; fields in the covenant being
+evaluated MUST ALWAYS equal the sum of all &ldquo;balance&rdquo; fields in the existing
+Namestate data.</p></li><li><p>If the existing Namestate data is version <code>0xfe</code> then the version of the
+covenant data being evaluated MUST ALSO be <code>0xfe</code></p></li></ol></blockquote><p>These rules make our example token chain a bit more reasonable. Tokens can not
+be created or destroyed once the chain is first created. The name owner must
+commit to the Update Chain forever and can not revert to data version <code>0</code> with
+a future <code>UPDATE</code> covenant, which would break the Update Chain.</p><h2 id=light-clients>Light Clients</h2><p>The secure light client is an essential component of the Handshake ecosystem, and
+any protocol extension should consider maintaining that compatibility. Since
+the Urkel tree is updated periodically, the state of every Update Chain will be
+verifiable by light clients after each tree commitment interval.</p><p>For some applications, the latest state may not be enough data to synchronize
+the Update Chain state. Luckily, BIP37 has been expanded in Handshake to
+include name hashes. This means that even an SPV node can get Merkle proofs of
+every UDPATE transaction for a name, and may then be able to compute the state
+of the system.</p><p>Normally this process would require a Bloom Filter upload and full chain rescan.
+However, the data in an Update Chain can provide &ldquo;hints&rdquo;. For example, part
+of the data in each <code>UPDATE</code> can include the block hash of the previous <code>UPDATE</code>.
+A light client can recursively request the full blocks indicated by these hints
+and reconstruct the Update Chain using only the relevant blocks. This scheme is
+similar to Neutrino wallets for Bitcoin which take advantage of BIP157 and BIP158.</p><h2 id=access-modes>Access Modes</h2><p>In combination with a chain of special-purpose data blobs, an Update Chain
+can employ special types of output scripts to expand the use cases.</p><h3 id=private>Private</h3><p>The name owner uses a standard pubKeyHash address and retains unilateral control
+over the Update Chain. This may support applications proprietary to the name
+itself, or be used as a trusted oracle.</p><h3 id=public>Public</h3><p>The name owner transfers the name to an address locked by the following redeem
+script &ldquo;anyone can UPDATE or RENEW&rdquo;:</p><pre tabindex=0><code>OP_TYPE
+0x07 // UPDATE
+OP_EQUAL
+OP_IF
+  OP_TRUE
+OP_ELSE
+  OP_TYPE
+  0x08 // RENEW
+  OP_EQUAL
+OP_ENDIF
+</code></pre><p>An Update Chain locked by this redeem script becomes a sort of public channel.
+Anyone can <code>UPDATE</code> the data in the Namestate. Without a soft fork to enforce
+extra consensus rules on that data this mode may be quite chaotic, but it could
+be used a sort of communication channel that any HNS user can access.</p><h3 id=pay-to-update>Pay-to-Update</h3><p>The name owner transfers the name to an address locked by the following redeem
+script &ldquo;Key A can ONLY UPDATE, key B can do anything else&rdquo;:</p><pre tabindex=0><code>OP_TYPE
+0x07 // UPDATE
+OP_EQUAL
+OP_IF
+  &lt;Key A&gt;
+  OP_CHECKSIG
+OP_ELSE
+  &lt;Key B&gt;
+  OP_CHECKSIG
+OP_ENDIF
+</code></pre><p>The name owner creates, partially signs with <code>Key A</code>, and publishes (off chain)
+the following transaction:</p><pre tabindex=0><code>vin:
+  0: Key A signature with SIGHASH NO_INPUT | ANYONE_CAN_PAY | SINGLE_REVERSE
+vout:
+  0: (null)
+  1: payment to name owner
+</code></pre><p>Note that <code>SIGHASH NO_INPUT</code> means this same partially-signed transaction can
+be used and re-used repeatedly as long as the name remains owned by the same
+address. A more advanced script can also disable <code>TRANSFER</code> to ensure that this
+is always the case for some applications.</p><p>The name owner uses two keys in the redeem script so that they can pre-sign
+the spending of ANY output that owns the name but we must ensure that an attacker
+can&rsquo;t take advantage of this pre-sign to transfer the name to themselves!</p><p>Any user who wishes to pay the name owner to <code>UPDATE</code> their chain completes the
+transaction as follows:</p><pre tabindex=0><code>vin:
+  0: Key A signature with SIGHASH NO_INPUT | ANYONE_CAN_PAY | SINGLE_REVERSE
+  1: User&#39;s funds
+vout:
+  0: User&#39;s UPDATE covenant with 512 byte payload
+  1: User&#39;s change output
+  2: payment to name owner
+</code></pre><p>With this mechanism, a name owner can set a price which must be paid by any and
+every user that wants to commit a message to the Update Chain.</p><p>In a variation of this mode, the name owner does NOT use <code>SIGHASH NO_INPUT</code> and
+instead creates a pre-sign <code>UPDATE</code> only when requested by a user, with an
+agreed-upon price and owner-approved <code>UPDATE</code> data.</p><hr><div class=info><strong>HIP:</strong><div>0015</div><strong>Status:</strong><div><a href=/status/draft>Draft</a></div><strong>Type:</strong><div><a href=/category/informational>Informational</a></div><strong>Created:</strong><div>Sat, 16 Jul 2022</div><strong>Last commit:</strong><div>Wed, 14 Sep 2022</div><strong>Author:</strong><div>Matthew Zipkin &lt;@pinheadmz></div></div><hr><a href=https://github.com/handshake-org/HIPs/blob/master/HIP-0015.md>Edit on GitHub</a></div></section><aside><h2>Table of Contents</h2><nav id=TableOfContents><ul><li><a href=#abstract>Abstract</a></li><li><a href=#background>Background</a><ul><li><a href=#covenants>Covenants</a></li><li><a href=#namestate-data>Namestate Data</a></li></ul></li><li><a href=#new-namestate-data-versions>New Namestate Data Versions</a></li><li><a href=#extending-consensus-rules-soft-forks>Extending Consensus Rules (soft forks)</a></li><li><a href=#light-clients>Light Clients</a></li><li><a href=#access-modes>Access Modes</a><ul><li><a href=#private>Private</a></li><li><a href=#public>Public</a></li><li><a href=#pay-to-update>Pay-to-Update</a></li></ul></li></ul></nav></aside></article></main><footer id=footer>©&nbsp;2021 Handshake Community<a rel=license href=http://creativecommons.org/licenses/by-sa/4.0/>(Creative
+Commons Attribution-ShareAlike 4.0 International License)</a></footer></body></html>
