@@ -21,7 +21,7 @@ Note: this document is particularly about clients that use Handshake with Transp
 For Handshake to power the internet and be a viable replacement for certificate authorities, billions of devices need
 to either rely on light clients or run their own full nodes. However, there’s a limited number of public full nodes.
 Clients need to be connected to full nodes at all times in order to browse the internet occupying a limited number
-of inbound connections. Such a model is unlikely to be sustainable. Handshake would need a huge number of public full nodes just to secure top level domains. It may seem that traditional clients use the P2P model but in reality, they use an ineffeicent client-server architecture disguised as a P2P model since clients do not contribute resources to the network and rely completly on full nodes with a reachable public ip address.
+of inbound connections. Such a model is unlikely to be sustainable. Handshake would need a huge number of public full nodes just to secure top level domains. It may seem that traditional clients use the P2P model but in reality, they use an inefficient client-server architecture disguised as a P2P model since clients do not contribute resources to the network and rely completely on full nodes with a reachable public ip address.
 
 Traditional light clients do not protect users’ privacy. First, name lookups are leaked to full nodes through
 `getproof` requests. Light clients generally rely on recursive resolvers that are in theory decentralized but
@@ -216,7 +216,7 @@ HIP-5 delegations are special NS records. They typically combine the security pr
 
 ### 1.4 DS rollover:
 
-This case requires special care to accomodate clients with older tree roots. During this transition period, servers MUST include two proofs in the certificate for the current and previous DS records. Servers MUST sign the DNS RRSets with both DS records and include it in the embedded DNSSEC chain extension.
+This case requires special care to accommodate clients with older tree roots. During this transition period, servers MUST include two proofs in the certificate for the current and previous DS records. Servers MUST sign the DNS RRSets with both DS records and include it in the embedded DNSSEC chain extension.
 
 - Proof 1: The 32nd most recent urkel root/proof from the previous UPDATEs.
 - Proof 2: The urkel root/proof at the time the new UPDATE was committed.
@@ -235,7 +235,7 @@ If the urkel extension includes DS records, include the complete DNSSEC authenti
 
 ## ACME clients & servers
 
-Servers MAY use ACME services (RFC8555) for certificate issuance that embed the appropriate x509 certificate extensions described above using a standard ACME client such as certbot without having to install an HNS client.
+Servers MAY use ACME services (RFC8555) for certificate issuance that embed the appropriate x509 certificate extensions described above using a standard ACME client such as certbot. An ACME client can also choose to run a light client such as hnsd to verify and embed its own proofs without relying on an ACME service.
 
 
 ## Timing considerations
@@ -253,8 +253,8 @@ Certificates should include tree roots/proofs that overlaps the intervals for sy
                                                 
 ```
 
-Illustrating included proofs (urkel extension 1.2/1.3 sections) with modified DS/HIP-5 delegation 
-the certificate includes two proofs. The recent proof applies to synced clients.
+Illustrating included proofs (urkel extension 1.2/1.3 sections) with modified DS/HIP-5 delegation. 
+The certificate includes two proofs. The recent proof applies to synced clients.
 
 ```
 ------------------------------ Urkel intervals --------------------------------->
@@ -277,7 +277,7 @@ While still being completely trustless, the proposed client relies on forwarding
 
 ## Security considerations
 
-Clients should dowload block headers & verify proof of work as defined in the theory of operation. It may also be possible to rely on Scalable Transparent Argument of Knowledge (STARK) to generate small proofs that clients can verify. Future standards may define how these proofs are generated & shared with clients to reduce state and reliance on full nodes. The tree root is the main trust anchor for securing HTTPS so great care must be taken to retrieve it securely. This standard does not restrict how the tree roots are obtained as long as they're deemed secure by the client.
+Clients should download block headers & verify proof of work as defined in the theory of operation. TLS extensions can be more flexible but they are harder to integrate into existing software. In the future, it might be feasible for clients to request the last N block headers from the server directly without having any HNS machinery at all. It may also be possible to rely on Scalable Transparent Argument of Knowledge (STARK) to generate small proofs that clients can verify. Future standards may define how these proofs are generated & shared with clients to reduce state and reliance on full nodes. The tree root is the main trust anchor for securing HTTPS so great care must be taken to retrieve it securely. This standard does not restrict how the tree roots are obtained as long as they're deemed secure by the client.
 
 
 [TODO] 
