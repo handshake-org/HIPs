@@ -27,6 +27,61 @@ In order to change the above situation, it is necessary to charge for domain nam
 
 After being charged and burned, it is estimated that 6 million (1HNS per renewal) to 60 million HNS will be burned annually (10HNS per renewal), with an annual inflation rate of 7.3% (1HNS per renewal) or 0% (10HNS per renewal); Referring to other systems such as ENS and. bit domain names, the holding fee is approximately $5 per year and $10 per 2 years HNS renews every two years If the HNS unit price is less than $1, the renewal fee can be 10HNS. If the HNS unit price is $10, the renewal fee can be 1HNS.
 
+
+
+I agree that "The challenge with this is the price. 1 HNS may be $100 one year, and 10 HNS may be worth $0.50 the next year. There would need to be some mechanism for setting the fee. Currently that mechanism is the block size limit, which introduces a bidding market for transaction fees."( Mr. Pinheadmz)
+
+Yes, it's difficult to give an absolutely accurate price, as HNS prices fluctuate; Through observation, we have found a high correlation between block difficulty and price. Therefore, the following is a pricing mechanism for reference:
+
+
+1. Pricing goal: To achieve zero inflation or slight deflation in HNS
+
+There are 5 factors to consider in pricing, including block difficulty, total number of domain names, number of block rewards, and block size Total market value
+
+3. Pricing is automatically adjusted and calculated every certain time or block
+
+
+Represented by formula:
+
+Fee=f1 (block difficulty) * f2 (total number of domain names) * f3 (number of block rewards, block size, total market value)
+
+
+Among them, f3 can be simplified as:
+
+F3 (number of block rewards, block size, total market value) ~= number of block rewards/100;
+
+
+After the first halving, f3=10HSN;
+
+After the second halving, f3=5HNS;
+
+After the third halving, f3=2.5HNS
+
+
+Calculation of f1:
+
+△1=Log(Difficulty1) - log(Difficulty0);
+
+If (△1>0): f1=1/(1+△ 1);
+If (△1<0): f1=1;
+
+Difficulty0 is the block difficulty before the previous time or block interval, and Difficulty1 is the block difficulty at the current calculation time;
+
+Calculation of f2:
+
+△2=Log(TotalDomains1) - log(TotalDomains0);
+
+If (△2>0): f2=1;
+If (△1<0): f2=1/(1+△2);
+
+Total Domains0 is the total number of domain names before the last time or block interval, and Total Domains1 is the total number of domain names during the current calculation;
+
+Finally, the calculation of renewal fee:
+
+Fee=f1 * f2 * f3
+
+
+
 ## References
 
 1. https://e.hnsfans.com
