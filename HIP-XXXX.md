@@ -14,6 +14,9 @@ Created: 2023-11-25
 The Handshake is the great web3.0 basic facilities, but the price of the HNS is too low to prompt the development of The Handshake. 
 A important reason is that  HNS has not capture the value of renewal domain. It is necessary to charge and burn the renewal fee.
 
+Designing a free renewal is a beautiful wish that takes HNS to heaven, but in reality, it takes HNS to the path of destruction.
+Anyone with some knowledge of economics knows that treating guests for free actually requires someone to pay for it . Someone has to pay for the expensive machines and expensive electricity bills of miners who maintain the internet. The free purchase of HNS is a decrease in its market value that Miners have to pay for electricity and machinery every year, so the market value of HNS will decrease every year until it returns to zero.
+
 ## Motivation
 
 Starting from the launch of the main network on February 17, 2020, as of November 29, 2023, for a total of 1375 days, Handshake has 12million domains and burned a total of 33million HNS. On average, it burns 24,000 HNS per day; In the past year, (33.3-29.1=4.2 million) burned an average of 11,500 HNS per day; Meanwhile, 144,000 new HNS are generated daily for miners. Therefore, the recent net inflation rate is 133,000 per day, and the current annual inflation rate is approximately 8.5%; The current total market value of Handshake is $12,362,796, and the total number of HNS is 618,139,800; The current HNS unit price is $0.02, far below the issuance price of $0.10340. 
@@ -25,61 +28,18 @@ The Handshake domain name has enormous value, but HNS performs poorly because HN
 
 In order to change the above situation, it is necessary to charge for domain name ownership at a suitable time, that is, to charge renewal fees The fee for a renewal can be between 1-10 HNS After the renewal fee is collected, it immediately burns up and injects this value into the entire Handshake network This is the simplest and most feasible way to increase HNS value capture . 
 
-After being charged and burned, it is estimated that 6 million (1HNS per renewal) to 60 million HNS will be burned annually (10HNS per renewal), with an annual inflation rate of 7.3% (1HNS per renewal) or 0% (10HNS per renewal); Referring to other systems such as ENS and. bit domain names, the holding fee is approximately $5 per year and $10 per 2 years HNS renews every two years If the HNS unit price is less than $1, the renewal fee can be 10HNS. If the HNS unit price is $10, the renewal fee can be 1HNS.
+After several months of contemplation, the renewal fee adopts a fixed fee of 1HNS, which is the best mechanism.  1HNS is the simplest, most aesthetically pleasing, easiest to operate, easiest for everyone to remember, and most in line with everyone's interests.  It is the will of God.
 
 
+The opposing view is that 1$HNS may be 1$, 100$, or 0.00001$, which will affect user updates. The essence of this viewpoint is causal inversion.
 
-I agree that "The challenge with this is the price. 1 HNS may be $100 one year, and 10 HNS may be worth $0.50 the next year. There would need to be some mechanism for setting the fee. Currently that mechanism is the block size limit, which introduces a bidding market for transaction fees."( Mr. Pinheadmz)
+The price of 1$HNS is the result of market action.  Since it is the result of the market, then it is the most suitable price. This price is the result of the combined effect of renewal fee and other factors It is not necessary to associate it with the renewal fee mechanism.
 
-Yes, it's difficult to give an absolutely accurate price, as HNS prices fluctuate; Through observation, we have found a high correlation between block difficulty and price. Therefore, the following is a pricing mechanism for reference:
+For example, if I buy a 100000$ house and after 10 years, the market price of the house rises to 10million$, what should I do? Will the world collapse? I think the world won't collapse.  Don't worry at all, if it really rises to 10 million, under the influence of the real market, then let it rise to 10 million. As long as it can rise, there must be a reasonable reason and it must be the best arrangement.
 
+If HNS reaches $100, then let it reach $100. There really came a day when it was the best arrangement in the market and the most reasonable. Handshake will not collapse for this. Didn't BTC reach $50000? Has the BTC network crashed? No, it hasn't.
 
-1. Pricing goal: To achieve zero inflation or slight deflation in HNS
-
-There are 5 factors to consider in pricing, including block difficulty, total number of domain names, number of block rewards, and block size Total market value
-
-3. Pricing is automatically adjusted and calculated every certain time or block
-
-
-Represented by formula:
-
-Fee=f1 (block difficulty) * f2 (total number of domain names) * f3 (number of block rewards, block size, total market value)
-
-
-Among them, f3 can be simplified as:
-
-F3 (number of block rewards, block size, total market value) ~= number of block rewards/100;
-
-
-After the first halving, f3=10HSN;
-
-After the second halving, f3=5HNS;
-
-After the third halving, f3=2.5HNS
-
-
-Calculation of f1:
-
-△1=Log(Difficulty1) - log(Difficulty0);
-
-If (△1>0): f1=1/(1+△ 1);
-If (△1<0): f1=1;
-
-Difficulty0 is the block difficulty before the previous time or block interval, and Difficulty1 is the block difficulty at the current calculation time;
-
-Calculation of f2:
-
-△2=Log(TotalDomains1) - log(TotalDomains0);
-
-If (△2>0): f2=1;
-If (△1<0): f2=1/(1+△2);
-
-Total Domains0 is the total number of domain names before the last time or block interval, and Total Domains1 is the total number of domain names during the current calculation;
-
-Finally, the calculation of renewal fee:
-
-Fee=f1 * f2 * f3
-
+The renewal cost of 1HNS will have adaptive ability . When 1HNS=100$, many low value domains will stop renewing, then the renewal fee burned will fall down, then the price will also fall down, until a new balance is reached, directly balancing the renewal fee of 1HNS with maintainable domains and the price of 1HNS;
 
 
 ## References
