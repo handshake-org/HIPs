@@ -2,7 +2,7 @@
 
 ```
 Number:  HIP-XXXX
-Title:   HIP Template
+Title:   Adding A AAAA Records on HNS Blockchain
 Type:    Informational
 Status:  Draft
 Authors: Skyinclude <http://skyinclude/>
