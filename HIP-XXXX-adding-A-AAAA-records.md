@@ -1,4 +1,4 @@
-# HIP-0000 : HIP Template
+# HIP-018 : Adding A AAAA Records on HNS Blockchain
 
 ```
 Number:  HIP-XXXX
