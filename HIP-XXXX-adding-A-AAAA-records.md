@@ -134,4 +134,6 @@ Then once an a record that is not NS, DS, or TXT, old software will stop decodin
 
 [https://rerecord.skyinclude.com](https://rerecord.skyinclude.com)
 
+[https://github.com/handshake-org/hsd/issues/125](https://github.com/handshake-org/hsd/issues/125)
+
 [https://github.com/handshake-org/hsd/blob/2bb8f0b0db76247aebf0cb961236db5fde8d80bc/lib/dns/resource.js#L122-L124](https://github.com/handshake-org/hsd/blob/2bb8f0b0db76247aebf0cb961236db5fde8d80bc/lib/dns/resource.js#L122-L124)
